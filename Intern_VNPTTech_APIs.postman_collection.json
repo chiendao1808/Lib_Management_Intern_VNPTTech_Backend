@@ -1,0 +1,1098 @@
+{
+	"info": {
+		"_postman_id": "fc2bea40-c336-4936-995a-dcc211789891",
+		"name": "Intern_VNPTTech_APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18647920"
+	},
+	"item": [
+		{
+			"name": "Reader APIs",
+			"item": [
+				{
+					"name": "findAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYwOTI2NzgxLCJpYXQiOjE2NjA5MjEzODEsInN0YWZmSWQiOiJEYW8gSHV5IENoaWVuIn0.mPtsHW2omqQeoP66PtKLa4nL7tQ6NmN5cc2q5nEHAgSxXuN7qWFqAFcKO-WOwMe_N1qMiZcRVj5oqHtMeakC4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader/find-all?page=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader",
+								"find-all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader/find-by-id?reader_id=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader",
+								"find-by-id"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addReader",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"readerName\":\"Nguyen Van Huan\",\r\n    \"readerEmail\":\"huan2401@gmail.com\",\r\n    \"readerPhone\":\"0987828781\",\r\n    \"readerAddress\":\"Bac Giang\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader/add",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateReader",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"readerName\":\"Dao Huy Chien\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader/update?reader_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader",
+								"update"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteReader",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader/delete?reader_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindByEmailOrPhone",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDk3MjA4LCJpYXQiOjE2NjEwOTE4MDgsInN0YWZmSWQiOjF9.onRs_OsNau52kngo95oR4TLd1WKW7lGxkQGP4eJfZ0k25Ma8ZNQLWdHgG5MLpTDzzxQjk2UND1HhtDM6mA3ptg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader/find-by-phone-or-email",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader",
+								"find-by-phone-or-email"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book APIs",
+			"item": [
+				{
+					"name": "findAllRecords",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYwOTk0NTAzLCJpYXQiOjE2NjA5ODkxMDMsInN0YWZmSWQiOjF9.AoOvSsUHwqeT8IBwQ8sK50YKbs3_t45ot9bw73aRsbF9ruU9NFAes9roJV3-cZfssiXlunGUf_EY3zomQXbViw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/find-all-rec?page=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"find-all-rec"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/find-by-id?book_id=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"find-by-id"
+							],
+							"query": [
+								{
+									"key": "book_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByBookName",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"body\":\"Spring\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/find-by-book-name?page=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"find-by-book-name"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByAuthor",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"body\":\"CRAI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/find-by-author?page=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"find-by-author"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddBook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookCode\":\"PROG0002\",\r\n    \"bookName\":\"Spring in Action\",\r\n    \"bookAuthor\":\"CRAIG WALLS\",\r\n    \"bookType\":\"Programming\",\r\n    \"bookPublicYear\":2019,\r\n    \"bookState\":\"Good\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/add?amount=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"add"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBook",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookName\":\"Python for Data Analyst 2nd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/update?book_code=PROG0005",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"update"
+							],
+							"query": [
+								{
+									"key": "book_code",
+									"value": "PROG0005"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAllBooks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxNzA2MDYwLCJpYXQiOjE2NjE3MDA2NjAsInN0YWZmSWQiOjF9.3PwjNbUCI1WT4uxiOqLhUvyfprHvSpOlNx1pFd4FU1qVI_wg87IyBfaGCD9n824XLVKgDPR3MlN7wkb9F8M7gg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/find-all-books",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"find-all-books"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BorrowForm APIs",
+			"item": [
+				{
+					"name": "FindByReader",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDk3MjA4LCJpYXQiOjE2NjEwOTE4MDgsInN0YWZmSWQiOjF9.onRs_OsNau52kngo95oR4TLd1WKW7lGxkQGP4eJfZ0k25Ma8ZNQLWdHgG5MLpTDzzxQjk2UND1HhtDM6mA3ptg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/borrow/find-by-reader?reader_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"borrow",
+								"find-by-reader"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addBorrowForm",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDgxNjc2LCJpYXQiOjE2NjEwNzYyNzYsInN0YWZmSWQiOjF9.zWXQrpY87rKokLfrGEkrJh4TJTxvGVAO-zHYPmwPTmgbbtKtAOZdG4rGOxndDcC1-j1yE1sFEaQiGEXCd2SkZw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestType\":\"POST\",\r\n    \"borrowInfos\":[\r\n        {\r\n            \"bookId\":1,\r\n            \"borrowDays\":2\r\n        },\r\n        {\r\n            \"bookId\":2,\r\n            \"borrowDays\":2\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/borrow/add?reader_id=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"borrow",
+								"add"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBorrowFormDetails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/borrow/details?borrow_form_id=3&page=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"borrow",
+								"details"
+							],
+							"query": [
+								{
+									"key": "borrow_form_id",
+									"value": "3"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReturnForm APIs",
+			"item": [
+				{
+					"name": "FindByReader",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/return/find-by-reader?reader_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"return",
+								"find-by-reader"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddReturnForm",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDk3MjA4LCJpYXQiOjE2NjEwOTE4MDgsInN0YWZmSWQiOjF9.onRs_OsNau52kngo95oR4TLd1WKW7lGxkQGP4eJfZ0k25Ma8ZNQLWdHgG5MLpTDzzxQjk2UND1HhtDM6mA3ptg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestType\":\"POST\",\r\n    \"returnInfos\":[\r\n        {\r\n            \"returnBookId\":1,\r\n            \"returnedBookState\":\"Good\",\r\n            \"paidAmount\":0.0\r\n        },\r\n        {\r\n            \"returnBookId\":5,\r\n            \"returnedBookState\":\"Good\",\r\n            \"paidAmount\":0.0\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/return/add?reader_id=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"return",
+								"add"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBorrowFormDetails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/returns/details?return_form_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"returns",
+								"details"
+							],
+							"query": [
+								{
+									"key": "return_form_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReaderBook APIs",
+			"item": [
+				{
+					"name": "findByReader",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/reader-book/find-by-reader?reader_id=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"reader-book",
+								"find-by-reader"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Staff APIs",
+			"item": [
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/staff/find-by-id?staff_id=",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"staff",
+								"find-by-id"
+							],
+							"query": [
+								{
+									"key": "staff_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindByUsernameOrEmail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staffUsername\":\"chiendao1808\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/staff/find-by-username-or-email",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"staff",
+								"find-by-username-or-email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYwOTk3NzI5LCJpYXQiOjE2NjA5OTIzMjksInN0YWZmSWQiOjF9.oUPiXqK8i5lXT1dkkyxdCHPvEW7PSdExWWXFEblcJz-XuMRNn1UMHXPTxL_6tBkeqK3JhegezBPcem86Mn7dVw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staffName\":\"Dao Huy Chien\",\r\n    \"staffPhone\":\"0918394508\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/staff/update",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"staff",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/staff/delete?staff_id=",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"staff",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "staff_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuthAPIs",
+			"item": [
+				{
+					"name": "signUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staffUsername\":\"quanganh01\",\r\n    \"staffPassword\": \"123456789\",\r\n    \"staffName\":\"Dang Quang Anh\",\r\n    \"staffPhone\":\"0987371872\",\r\n    \"staffEmail\":\"quanganh01@gmail.com\",\r\n    \"staffAddress\":\"Hanoi\",\r\n    \"staffRole\":\"Keeper\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"chiendao1808\",\r\n    \"password\":\"18082001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/auth/signin",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReaderCard APIs",
+			"item": [
+				{
+					"name": "findByReader",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDc2MDgyLCJpYXQiOjE2NjEwNzA2ODIsInN0YWZmSWQiOjF9.j-g82-KHf5R4HnVt-4C2QOFi-hsYRbZmcw1mkR_lfZ2ZyLKic1pPETidFIqx17sMZCUjGKOYWrNeOvzUYLH5rQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/card/find-by-reader?reader_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"card",
+								"find-by-reader"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDgxNjc2LCJpYXQiOjE2NjEwNzYyNzYsInN0YWZmSWQiOjF9.zWXQrpY87rKokLfrGEkrJh4TJTxvGVAO-zHYPmwPTmgbbtKtAOZdG4rGOxndDcC1-j1yE1sFEaQiGEXCd2SkZw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/card/publish?reader_id=2",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"card",
+								"publish"
+							],
+							"query": [
+								{
+									"key": "reader_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/card/update?card_id=1",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"card",
+								"update"
+							],
+							"query": [
+								{
+									"key": "card_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/card/delete?card_id=",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"card",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "card_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload APIs",
+			"item": [
+				{
+					"name": "UploadBook Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdGFmZlVzZXJuYW1lIjoiY2hpZW5kYW8xODA4IiwiZXhwIjoxNjYxMDc2MDgyLCJpYXQiOjE2NjEwNzA2ODIsInN0YWZmSWQiOjF9.j-g82-KHf5R4HnVt-4C2QOFi-hsYRbZmcw1mkR_lfZ2ZyLKic1pPETidFIqx17sMZCUjGKOYWrNeOvzUYLH5rQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/leope/Desktop/download.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{libmngdomain}}/libmng/api/book/upload?book_code=PROG0005",
+							"protocol": "http",
+							"host": [
+								"{{libmngdomain}}"
+							],
+							"path": [
+								"libmng",
+								"api",
+								"book",
+								"upload"
+							],
+							"query": [
+								{
+									"key": "book_code",
+									"value": "PROG0005"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
