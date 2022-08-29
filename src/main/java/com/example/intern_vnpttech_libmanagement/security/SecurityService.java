@@ -1,7 +1,7 @@
 package com.example.intern_vnpttech_libmanagement.security;
 
-import com.example.intern_vnpttech_libmanagement.entities.LibStaff;
-import com.example.intern_vnpttech_libmanagement.repositories.LibStaffRepo;
+import com.example.intern_vnpttech_libmanagement.entities.Staff;
+import com.example.intern_vnpttech_libmanagement.repositories.StaffRepo;
 import com.example.intern_vnpttech_libmanagement.security.jwt.JWTProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +17,15 @@ public class SecurityService {
     private JWTProvider jwtProvider;
 
     @Autowired
-    private LibStaffRepo libStaffRepo;
+    private StaffRepo staffRepo;
 
-    public LibStaff getStaffFromRequest(HttpServletRequest request)
+    public Staff getStaffFromRequest(HttpServletRequest request)
     {
         try{
             String token = jwtProvider.getTokenFromRequest(request);
             Integer staffId = jwtProvider.getStaffIdFromToken(token);
-            return libStaffRepo.findById(staffId).isPresent()
-                    ?libStaffRepo.findById(staffId).get()
+            return staffRepo.findById(staffId).isPresent()
+                    ? staffRepo.findById(staffId).get()
                     :null;
         } catch (Exception ex)
         {

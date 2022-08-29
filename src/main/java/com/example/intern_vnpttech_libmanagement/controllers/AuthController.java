@@ -3,11 +3,11 @@ package com.example.intern_vnpttech_libmanagement.controllers;
 import com.example.intern_vnpttech_libmanagement.dto.request.LoginRequest;
 import com.example.intern_vnpttech_libmanagement.dto.response.LoginResponse;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
-import com.example.intern_vnpttech_libmanagement.entities.LibStaff;
+import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import com.example.intern_vnpttech_libmanagement.security.jwt.JWTProvider;
 import com.example.intern_vnpttech_libmanagement.security.user_details.CustomUserDetailService;
 import com.example.intern_vnpttech_libmanagement.security.user_details.CustomUserDetails;
-import com.example.intern_vnpttech_libmanagement.services.LibStaffService;
+import com.example.intern_vnpttech_libmanagement.services.StaffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
@@ -33,7 +32,7 @@ import java.util.Date;
 public class AuthController {
 
     @Autowired
-    private LibStaffService libStaffService;
+    private StaffService staffService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -49,9 +48,9 @@ public class AuthController {
 
     @Operation(summary = "Sign up a library staff")
     @PostMapping(path = "/signup")
-    public ResponseEntity<?> signUp(@RequestBody LibStaff staff)
+    public ResponseEntity<?> signUp(@RequestBody Staff staff)
     {
-        return libStaffService.add(staff).isPresent()
+        return staffService.add(staff).isPresent()
                 ?ResponseEntity.status(200).body(new MessageResponse("Add staff successfully","success"))
                 :ResponseEntity.status(200).body(new MessageResponse("Add staff fail","fail"));
     }

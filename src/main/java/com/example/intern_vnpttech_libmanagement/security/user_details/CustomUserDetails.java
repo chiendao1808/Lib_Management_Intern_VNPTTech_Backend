@@ -1,7 +1,7 @@
 package com.example.intern_vnpttech_libmanagement.security.user_details;
 
 
-import com.example.intern_vnpttech_libmanagement.entities.LibStaff;
+import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Collections;
 @NoArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private LibStaff staff;
+    private Staff staff;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

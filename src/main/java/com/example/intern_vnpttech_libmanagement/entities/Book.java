@@ -28,8 +28,9 @@ public class Book implements Cloneable, Serializable {
     @Column(name = "book_code",nullable = false)
     private String bookCode;
 
-    @Column(name = "book_type",nullable = false)
-    private String bookType;
+    @ManyToOne
+    @JoinColumn(name = "book_type_id")
+    private BookType bookType;
 
     @Column(name = "book_name", nullable = false)
     @NotNull

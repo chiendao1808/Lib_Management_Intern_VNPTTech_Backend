@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,7 +28,7 @@ public class ReturnForm {
 
     @ManyToOne
     @JoinColumn(name = "staff_id",nullable = false)
-    private LibStaff didStaff;
+    private Staff didStaff;
 
     @Column(name = "total_paid_amount")
     private Float totalPaidAmount;

@@ -117,7 +117,7 @@ public class BookServiceImpl implements BookService {
             book.setAddedAt(new Timestamp(System.currentTimeMillis()));
             book.setBookAuthor(book.getBookAuthor().toUpperCase());
             book.setAvailable(true);
-            book.setBookCode(StringProcessUtils.bookCodeGenerator(book.getBookType()
+            book.setBookCode(StringProcessUtils.bookCodeGenerator(book.getBookType().getBookTypeName()
                     ,book.getBookName(),book.getBookAuthor(),book.getBookPublishYear()));
             return Optional.ofNullable(bookRepo.save(book));
         } catch (Exception ex)
@@ -151,7 +151,7 @@ public class BookServiceImpl implements BookService {
             Book bookToUpdate = bookRepo.findByBookId(bookRecordDTO.getBookId()).get();
             bookToUpdate.setBookName(bookRecordDTO.getBookName() != null ? bookRecordDTO.getBookName() : bookToUpdate.getBookName());
             bookToUpdate.setBookAuthor(bookRecordDTO.getBookAuthor() != null ? bookRecordDTO.getBookAuthor() : bookToUpdate.getBookAuthor());
-            bookToUpdate.setBookType(bookRecordDTO.getBookType() != null ? bookRecordDTO.getBookType() : bookToUpdate.getBookType());
+           // bookToUpdate.setBookType(bookRecordDTO.getBookType() != null ? bookRecordDTO.getBookType() : bookToUpdate.getBookType());
             bookToUpdate.setBookState(bookRecordDTO.getBookState() != null ? bookRecordDTO.getBookState() : bookToUpdate.getBookState());
             bookToUpdate.setBookImage(bookRecordDTO.getBookImageURL()!=null? bookRecordDTO.getBookImageURL(): bookToUpdate.getBookImage());
             bookToUpdate.setBookPublishYear(bookRecordDTO.getBookPublishYear() != null ? bookRecordDTO.getBookPublishYear() : bookToUpdate.getBookPublishYear());

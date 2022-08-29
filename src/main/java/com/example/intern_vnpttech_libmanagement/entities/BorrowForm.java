@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Data
@@ -32,7 +31,7 @@ public class BorrowForm implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "staff_id",nullable = false)
-    private LibStaff doStaff;
+    private Staff doStaff;
 
 //    @ManyToMany
 //    @JoinTable(name = "borrow_form_detail",

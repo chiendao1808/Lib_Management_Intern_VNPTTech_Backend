@@ -2,7 +2,7 @@ package com.example.intern_vnpttech_libmanagement.controllers;
 
 import com.example.intern_vnpttech_libmanagement.dto.request.ReturnRequest;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
-import com.example.intern_vnpttech_libmanagement.entities.LibStaff;
+import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import com.example.intern_vnpttech_libmanagement.entities.ReturnForm;
 import com.example.intern_vnpttech_libmanagement.services.ReaderService;
 import com.example.intern_vnpttech_libmanagement.services.ReturnFormDetailService;
@@ -62,11 +62,11 @@ public class ReturnFormController {
                                  HttpServletRequest request)
     {
         returnRequest.setRequestType("POST");
-        LibStaff libStaff = util.getStaffFromRequest(request);
-        if(libStaff==null)
+        Staff staff = util.getStaffFromRequest(request);
+        if(staff ==null)
             return ResponseEntity.status(200).body(new MessageResponse("Can't not get staff from request","fail"));
         ReturnForm returnForm = new ReturnForm();
-        returnForm.setDidStaff(libStaff);
+        returnForm.setDidStaff(staff);
         if(!readerService.findById(readerId).isPresent())
             return ResponseEntity.status(200).body(new MessageResponse("Reader not found","fail"));
         else returnForm.setReader(readerService.findById(readerId).get());

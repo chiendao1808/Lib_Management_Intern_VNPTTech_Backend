@@ -3,7 +3,7 @@ package com.example.intern_vnpttech_libmanagement.controllers;
 import com.example.intern_vnpttech_libmanagement.dto.request.BorrowRequest;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
 import com.example.intern_vnpttech_libmanagement.entities.BorrowForm;
-import com.example.intern_vnpttech_libmanagement.entities.LibStaff;
+import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import com.example.intern_vnpttech_libmanagement.services.BookService;
 import com.example.intern_vnpttech_libmanagement.services.BorrowFormDetailService;
 import com.example.intern_vnpttech_libmanagement.services.BorrowFormService;
@@ -74,11 +74,11 @@ public class BorrowFormController {
                                           HttpServletRequest request)
    {
        borrowRequest.setRequestType("POST");
-       LibStaff libStaff = util.getStaffFromRequest(request);
-       if(libStaff==null)
+       Staff staff = util.getStaffFromRequest(request);
+       if(staff ==null)
            throw new RuntimeException(""); // sử lý exception sau
        BorrowForm newBorrowForm = new BorrowForm();
-       newBorrowForm.setDoStaff(libStaff);
+       newBorrowForm.setDoStaff(staff);
        if(!readerService.findById(readerId).isPresent())
               return ResponseEntity.status(200).body(new MessageResponse("Reader not found","fail"));
        else newBorrowForm.setReader(readerService.findById(readerId).get());

@@ -4,7 +4,9 @@ import com.example.intern_vnpttech_libmanagement.dto.request.BodyRequest;
 import com.example.intern_vnpttech_libmanagement.dto.entity_dto.BookRecordDTO;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
 import com.example.intern_vnpttech_libmanagement.entities.Book;
+import com.example.intern_vnpttech_libmanagement.entities.Publisher;
 import com.example.intern_vnpttech_libmanagement.services.BookService;
+import com.example.intern_vnpttech_libmanagement.services.PublisherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping(path = "/libmng/api/book")
 @Tag(name = "Book Controller")
@@ -23,6 +27,9 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private PublisherService publisherService;
 
     @Operation(summary = "Find all book's records from database")
     @SecurityRequirement(name = "methodAuth")
@@ -94,11 +101,16 @@ public class BookController {
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> add(@RequestBody Book book,
                                  @RequestParam(name = "publisher_id") long publisherId,
+                                 @RequestParam(name = "book_type_id") long bookTypeId,
                                  @RequestParam(name = "amount") int amount) throws CloneNotSupportedException
     {
+        Optional<Publisher> publisherOptional = publisherService.findById(publisherId);
+        if(!publisherOptional.isPresent())
+            return ResponseEntity.status(200).body(new MessageResponse("Publisher not found","fail"));
         for(int i=0; i<amount;i++)
         {
             Book newBook = (Book)book.clone();
+            newBook.setPublisher(publisherOptional.get());
             if(!bookService.add(newBook).isPresent())
                 return ResponseEntity.status(200).body(new MessageResponse("Add book fail","fail"));
         }
