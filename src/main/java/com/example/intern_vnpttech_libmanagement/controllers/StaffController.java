@@ -1,6 +1,6 @@
 package com.example.intern_vnpttech_libmanagement.controllers;
 
-import com.example.intern_vnpttech_libmanagement.dto.entity_dto.LibStaffDTO;
+import com.example.intern_vnpttech_libmanagement.dto.entity_dto.StaffDTO;
 import com.example.intern_vnpttech_libmanagement.dto.request.ChangePasswordRequest;
 import com.example.intern_vnpttech_libmanagement.dto.request.StaffRequest;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
@@ -60,7 +60,7 @@ public class StaffController {
     @Operation(summary = "Update staff's infos (self-update)")
     @PutMapping(path = "/update")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> update(@RequestBody LibStaffDTO staffDTO,
+    public ResponseEntity<?> update(@RequestBody StaffDTO staffDTO,
                                     HttpServletRequest request)
     {
         long staffId = securityService.getStaffFromRequest(request).getStaffId();
@@ -85,7 +85,7 @@ public class StaffController {
         String encodedCurrentPass = staffService.findById(staffId).get().getStaffPassword();
         if(!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(),encodedCurrentPass))
             return ResponseEntity.status(200).body(new MessageResponse("Current password was wrong","fail"));
-        return staffService.update(LibStaffDTO.builder()
+        return staffService.update(StaffDTO.builder()
                                                     .staffId(staffId)
                                                     .staffPassword(changePasswordRequest.getNewPassword())
                                                     .build()).isPresent()

@@ -1,6 +1,6 @@
 package com.example.intern_vnpttech_libmanagement.services;
 
-import com.example.intern_vnpttech_libmanagement.dto.entity_dto.LibStaffDTO;
+import com.example.intern_vnpttech_libmanagement.dto.entity_dto.StaffDTO;
 import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public interface StaffService {
 
     Optional<Staff> add(Staff staff);
 
-    Optional<Staff> update(LibStaffDTO staffDTO);
+    Optional<Staff> update(StaffDTO staffDTO);
 
     boolean delete(long staffId);
 }

@@ -1,6 +1,6 @@
 package com.example.intern_vnpttech_libmanagement.serviceimpls;
 
-import com.example.intern_vnpttech_libmanagement.dto.entity_dto.LibStaffDTO;
+import com.example.intern_vnpttech_libmanagement.dto.entity_dto.StaffDTO;
 import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import com.example.intern_vnpttech_libmanagement.repositories.StaffRepo;
 import com.example.intern_vnpttech_libmanagement.services.StaffService;
@@ -76,7 +76,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Optional<Staff> update(LibStaffDTO staffDTO) {
+    public Optional<Staff> update(StaffDTO staffDTO) {
         try{
             Staff staffToUpdate = staffRepo.findById(staffDTO.getStaffId()).get();
             staffToUpdate.setStaffPhone(staffDTO.getStaffPhone()!=null?staffDTO.getStaffPhone():staffToUpdate.getStaffPhone());

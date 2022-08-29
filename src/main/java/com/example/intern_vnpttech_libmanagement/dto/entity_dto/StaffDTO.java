@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LibStaffDTO {
+public class StaffDTO {
 
     private Long staffId;
 
