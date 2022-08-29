@@ -34,7 +34,7 @@ public class Publisher {
     @Column(name = "publisher_fax")
     private String publisherFax;
 
-    @Column(name = "publisher")
+    @Column(name = "publisher_address")
     private String publisherAddress;
 
     @Column(name = "deleted")

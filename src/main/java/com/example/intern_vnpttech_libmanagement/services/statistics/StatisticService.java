@@ -1,10 +1,15 @@
 package com.example.intern_vnpttech_libmanagement.services.statistics;
 
+import com.example.intern_vnpttech_libmanagement.dto.info.BookStatistics;
+import com.example.intern_vnpttech_libmanagement.dto.info.BookStatisticsDetails;
 import com.example.intern_vnpttech_libmanagement.dto.info.CardStatistics;
 import com.example.intern_vnpttech_libmanagement.dto.info.CardStatisticsDetails;
+import com.example.intern_vnpttech_libmanagement.entities.BookType;
+import com.example.intern_vnpttech_libmanagement.entities.ReaderBook;
 import com.example.intern_vnpttech_libmanagement.entities.ReaderCard;
 import com.example.intern_vnpttech_libmanagement.entities.ReaderCardType;
 import com.example.intern_vnpttech_libmanagement.repositories.BookRepo;
+import com.example.intern_vnpttech_libmanagement.repositories.BookTypeRepo;
 import com.example.intern_vnpttech_libmanagement.repositories.ReaderBookRepo;
 import com.example.intern_vnpttech_libmanagement.repositories.ReaderCardTypeRepo;
 import com.example.intern_vnpttech_libmanagement.services.ReaderCardRepo;
@@ -33,28 +38,66 @@ public class StatisticService {
     @Autowired
     private ReaderCardTypeRepo cardTypeRepo;
 
+    @Autowired
+    private BookTypeRepo bookTypeRepo;
 
-    public CardStatistics cardStatistic(int month, int year)
+
+    public CardStatistics getCardStatistic(int month, int year)
     {
-        List<ReaderCard> readerCardList = readerCardRepo.findAll();
-        CardStatistics cardStatistics = new CardStatistics();
-        long numberPublishedCardInMonth = readerCardList
-                .stream().filter(readerCard -> DateAndTimeUtils.inMonthCheck(readerCard.getPublishedAt(),month,year)).count();
-        Map<String, CardStatisticsDetails> detailNumbers= cardStatistics.getDetailNumbers();
-        cardStatistics.setMonth(month);
-        cardStatistics.setYear(year);
-        List<ReaderCardType> cardTypeList = cardTypeRepo.getAllCardType();
-        cardTypeList.stream().forEach(readerCardType -> {
-            long numberPublishCard = readerCardList.stream().filter(readerCard -> {
-                return DateAndTimeUtils.inMonthCheck(readerCard.getPublishedAt(),month,year) && readerCard.getCardId()==readerCardType.getCardTypeId();
-            }).count();
-            detailNumbers.put(readerCardType.getCardTypeName(),new CardStatisticsDetails(numberPublishCard,numberPublishCard/numberPublishedCardInMonth));
-        });
-        return cardStatistics;
+        try{
+            List<ReaderCard> readerCardList = readerCardRepo.findAll();
+            CardStatistics cardStatistics = new CardStatistics();
+            long numberPublishedCardInMonth = readerCardList
+                    .stream().filter(readerCard -> DateAndTimeUtils.inMonthCheck(readerCard.getPublishedAt(),month,year)).count();
+            Map<String, CardStatisticsDetails> detailNumbers= cardStatistics.getDetailNumbers();
+            cardStatistics.setMonth(month);
+            cardStatistics.setYear(year);
+            List<ReaderCardType> cardTypeList = cardTypeRepo.getAllCardType();
+            cardTypeList.stream().forEach(readerCardType -> {
+                long numberPublishCard = readerCardList.stream().filter(readerCard -> {
+                    return DateAndTimeUtils.inMonthCheck(readerCard.getPublishedAt(),month,year) && readerCard.getCardId()==readerCardType.getCardTypeId();
+                }).count();
+                detailNumbers.put(readerCardType.getCardTypeName(),new CardStatisticsDetails(numberPublishCard,(float) numberPublishCard/numberPublishedCardInMonth));
+            });
+            cardStatistics.setDetailNumbers(detailNumbers);
+            cardStatistics.setTotalNumberPublishedCardInMonth(numberPublishedCardInMonth);
+            return cardStatistics;
+        } catch (Exception ex)
+        {
+            log.error("Card statistic error",ex);
+            return null;
+        }
     }
 
-
-
-
-
+    // make a statistic of book's types based on the number of borrowed turns
+    public BookStatistics getBookTypeStatistic(int month, int year)
+    {
+        try{
+          List<ReaderBook> readerBookList = readerBookRepo.findAll();
+          BookStatistics bookStatistics = new BookStatistics();
+          bookStatistics.setMonth(month);
+          bookStatistics.setYear(year);
+          long totalBorrowedTurns = readerBookList.stream().filter(readerBook -> {
+              return DateAndTimeUtils.inMonthCheck(readerBook.getBorrowedAt(),month,year);
+          }).count();
+          Map<String, BookStatisticsDetails> details = bookStatistics.getDetails();
+          List<BookType> bookTypeList = bookTypeRepo.getAllBookType();
+          bookTypeList.stream().forEach(bookType -> {
+              long numberBorrowedTurns = readerBookList
+                      .stream()
+                      .filter(readerBook -> DateAndTimeUtils.inMonthCheck(readerBook.getBorrowedAt(),month,year)
+                              && readerBook.getBook().getBookType().getBookTypeId()==bookType.getBookTypeId())
+                      .count();
+              details.put(bookType.getBookTypeName(),
+                            new BookStatisticsDetails(numberBorrowedTurns,(float)numberBorrowedTurns/totalBorrowedTurns));
+          });
+          bookStatistics.setDetails(details);
+          bookStatistics.setTotalBorrowedTurns(totalBorrowedTurns);
+          return bookStatistics;
+        } catch (Exception ex)
+        {
+            log.error("Book type statistic error",ex);
+            return null;
+        }
+    }
 }

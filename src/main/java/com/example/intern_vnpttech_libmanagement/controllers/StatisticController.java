@@ -22,13 +22,24 @@ public class StatisticController {
     private StatisticService statisticService;
 
     @Operation(summary = "Get statistics of reader's cards published in a month")
-    @GetMapping(path = "/card/monthly")
+    @GetMapping(path = "/card/stats/monthly")
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> cardStatistic(@RequestParam(name = "month") int month,
                                            @RequestParam(name = "year") int year,
                                            HttpServletRequest request)
     {
-        //return ResponseEntity.ok(statisticService.cardStatistic(month,year));
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(statisticService.getCardStatistic(month,year));
+        //return ResponseEntity.ok("");
+    }
+
+    @Operation(summary = "Get statistics of book's type borrowed in a month")
+    @GetMapping(path = "/book-type/stats/monthly")
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> bookTypeStatistic(@RequestParam(name = "month") int month,
+                                               @RequestParam(name = "year") int year,
+                                           HttpServletRequest request)
+    {
+        return ResponseEntity.ok(statisticService.getBookTypeStatistic(month,year));
+        //return ResponseEntity.ok("");
     }
 }

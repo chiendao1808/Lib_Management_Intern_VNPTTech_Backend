@@ -117,7 +117,7 @@ public class BookController {
         return ResponseEntity.status(201).body(new MessageResponse("Add book sucessfully","success"));
     }
 
-    @Operation(summary = "Update all book's record of a book have the same book's code")
+    @Operation(summary = "Update all records of a book that have the same book's code")
     @PutMapping(path = "/update-all")
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> update(@RequestParam(name = "book_code") String bookCode,

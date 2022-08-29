@@ -25,7 +25,7 @@ public class DateAndTimeUtils {
     {
         Calendar calendar =Calendar.getInstance();
         calendar.setTime(ts);
-        if(calendar.get(Calendar.MONTH+1)==month && calendar.get(Calendar.YEAR)==year)
+        if(calendar.get(Calendar.MONTH)+1==month && calendar.get(Calendar.YEAR)==year)
             return true;
         else return false;
     }

@@ -33,6 +33,7 @@ public class BookServiceImpl implements BookService {
             return bookRepo.findAll(pageable);
         }catch (Exception ex)
         {
+            ex.printStackTrace();
             log.error("Find All book error",ex);
             return Page.empty();
         }

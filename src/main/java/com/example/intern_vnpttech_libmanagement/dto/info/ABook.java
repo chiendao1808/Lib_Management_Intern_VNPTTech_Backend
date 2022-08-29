@@ -23,7 +23,6 @@ public class ABook {
 
     private int bookPublishYear;
 
-    //private String bookType;
 
     private String bookAuthor;
 
@@ -39,7 +38,6 @@ public class ABook {
         this.bookAuthor =book.getBookAuthor();
         this.publisher =book.getPublisher();
         this.bookPublishYear =book.getBookPublishYear();
-       // this.bookType =book.getBookType();
         this.amountAvailable = amountAvailable;
         this.deleted = amountAvailable==0?true:false;
     }

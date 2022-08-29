@@ -19,7 +19,7 @@ public interface PublisherRepo extends JpaRepository<Publisher,Long> {
     @Query(value = "from Publisher publisher where publisher.deleted=false")
     List<Publisher> findAll(); // find all publisher those have deleted = false
 
-    @Query(value = "from Publisher publisher")
+    @Query(value = "select publisher from Publisher publisher where publisher.deleted =false ")
     List<Publisher> findAllExistting();
 
     @Query(value = "from Publisher publisher where (publisher.publisherPhone=?1 or publisher.publisherEmail=?2) " +
