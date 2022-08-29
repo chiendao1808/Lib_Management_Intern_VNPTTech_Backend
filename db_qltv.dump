@@ -67,8 +67,8 @@ CREATE TABLE qltv_vnpttech_db.book (
     added_at timestamp(0) without time zone,
     book_state character varying(100) DEFAULT 'Good'::character varying NOT NULL,
     book_image character varying(256),
-    book_type character varying(45),
-    publisher_id bigint
+    publisher_id bigint,
+    book_type_id bigint
 );
 
 
@@ -93,6 +93,41 @@ ALTER TABLE qltv_vnpttech_db.book_book_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE qltv_vnpttech_db.book_book_id_seq OWNED BY qltv_vnpttech_db.book.book_id;
+
+
+--
+-- Name: book_type; Type: TABLE; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+CREATE TABLE qltv_vnpttech_db.book_type (
+    book_type_id bigint NOT NULL,
+    book_type_name character varying(50) NOT NULL,
+    deleted boolean NOT NULL,
+    created_at timestamp(0) without time zone
+);
+
+
+ALTER TABLE qltv_vnpttech_db.book_type OWNER TO postgres;
+
+--
+-- Name: book_type_book_type_id_seq; Type: SEQUENCE; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+CREATE SEQUENCE qltv_vnpttech_db.book_type_book_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE qltv_vnpttech_db.book_type_book_type_id_seq OWNER TO postgres;
+
+--
+-- Name: book_type_book_type_id_seq; Type: SEQUENCE OWNED BY; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+ALTER SEQUENCE qltv_vnpttech_db.book_type_book_type_id_seq OWNED BY qltv_vnpttech_db.book_type.book_type_id;
 
 
 --
@@ -170,10 +205,10 @@ ALTER SEQUENCE qltv_vnpttech_db.borrow_form_detail_id_seq OWNED BY qltv_vnpttech
 
 
 --
--- Name: lib_staff; Type: TABLE; Schema: qltv_vnpttech_db; Owner: postgres
+-- Name: staff; Type: TABLE; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
-CREATE TABLE qltv_vnpttech_db.lib_staff (
+CREATE TABLE qltv_vnpttech_db.staff (
     staff_id bigint NOT NULL,
     staff_username character varying(100) NOT NULL,
     staff_password character varying(100) NOT NULL,
@@ -186,7 +221,7 @@ CREATE TABLE qltv_vnpttech_db.lib_staff (
 );
 
 
-ALTER TABLE qltv_vnpttech_db.lib_staff OWNER TO postgres;
+ALTER TABLE qltv_vnpttech_db.staff OWNER TO postgres;
 
 --
 -- Name: lib_staff_staff_id_seq; Type: SEQUENCE; Schema: qltv_vnpttech_db; Owner: postgres
@@ -206,7 +241,7 @@ ALTER TABLE qltv_vnpttech_db.lib_staff_staff_id_seq OWNER TO postgres;
 -- Name: lib_staff_staff_id_seq; Type: SEQUENCE OWNED BY; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
-ALTER SEQUENCE qltv_vnpttech_db.lib_staff_staff_id_seq OWNED BY qltv_vnpttech_db.lib_staff.staff_id;
+ALTER SEQUENCE qltv_vnpttech_db.lib_staff_staff_id_seq OWNED BY qltv_vnpttech_db.staff.staff_id;
 
 
 --
@@ -219,7 +254,7 @@ CREATE TABLE qltv_vnpttech_db.publisher (
     publisher_address character varying(256) NOT NULL,
     deleted boolean,
     publisher_phone character varying(10) NOT NULL,
-    publisher_email character varying(100),
+    publisher_email character varying(100) NOT NULL,
     publisher_fax character varying(15)
 );
 
@@ -482,6 +517,13 @@ ALTER TABLE ONLY qltv_vnpttech_db.book ALTER COLUMN book_id SET DEFAULT nextval(
 
 
 --
+-- Name: book_type book_type_id; Type: DEFAULT; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+ALTER TABLE ONLY qltv_vnpttech_db.book_type ALTER COLUMN book_type_id SET DEFAULT nextval('qltv_vnpttech_db.book_type_book_type_id_seq'::regclass);
+
+
+--
 -- Name: borrow_form borrow_form_id; Type: DEFAULT; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
@@ -493,13 +535,6 @@ ALTER TABLE ONLY qltv_vnpttech_db.borrow_form ALTER COLUMN borrow_form_id SET DE
 --
 
 ALTER TABLE ONLY qltv_vnpttech_db.borrow_form_detail ALTER COLUMN id SET DEFAULT nextval('qltv_vnpttech_db.borrow_form_detail_id_seq'::regclass);
-
-
---
--- Name: lib_staff staff_id; Type: DEFAULT; Schema: qltv_vnpttech_db; Owner: postgres
---
-
-ALTER TABLE ONLY qltv_vnpttech_db.lib_staff ALTER COLUMN staff_id SET DEFAULT nextval('qltv_vnpttech_db.lib_staff_staff_id_seq'::regclass);
 
 
 --
@@ -552,16 +587,35 @@ ALTER TABLE ONLY qltv_vnpttech_db.return_form_detail ALTER COLUMN id SET DEFAULT
 
 
 --
+-- Name: staff staff_id; Type: DEFAULT; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+ALTER TABLE ONLY qltv_vnpttech_db.staff ALTER COLUMN staff_id SET DEFAULT nextval('qltv_vnpttech_db.lib_staff_staff_id_seq'::regclass);
+
+
+--
 -- Data for Name: book; Type: TABLE DATA; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
-COPY qltv_vnpttech_db.book (book_id, book_code, book_name, book_author, book_publish_year, available, deleted, added_at, book_state, book_image, book_type, publisher_id) FROM stdin;
-2	PROG0005	Python for Data Analiyst	WES MCKNINNEY	2020	t	f	2022-08-18 08:33:49	Good	http://res.cloudinary.com/chiendaocloudinaryserver/image/upload/v1661072721/bamlnhc7cg6svwyxooc6.png	Programming	\N
-6	PROG0002	Spring in Action	CRAIG WALLS	2019	t	f	2022-08-18 08:35:23	Good	\N	Programming	\N
-1	PROG0005	Python for Data Analiyst	WES MCKNINNEY	2020	t	f	2022-08-18 08:33:49	Good	http://res.cloudinary.com/chiendaocloudinaryserver/image/upload/v1661072721/bamlnhc7cg6svwyxooc6.png	Programming	\N
-5	PROG0002	Spring in Action	CRAIG WALLS	2019	t	f	2022-08-18 08:35:23	Good	\N	Programming	\N
-4	PROG0001	Microservices in Action	MORGAN BRUCE PAULO A. PEREIRA	2021	t	f	2022-08-18 08:34:36	Good	\N	Programming	\N
-3	PROG0001	Microservices in Action	MORGAN BRUCE PAULO A. PEREIRA	2021	t	f	2022-08-18 08:34:36	Good	\N	Programming	\N
+COPY qltv_vnpttech_db.book (book_id, book_code, book_name, book_author, book_publish_year, available, deleted, added_at, book_state, book_image, publisher_id, book_type_id) FROM stdin;
+1	PROG0005	Python for Data Analiyst	WES MCKNINNEY	2020	t	f	2022-08-18 08:33:49	Good	http://res.cloudinary.com/chiendaocloudinaryserver/image/upload/v1661072721/bamlnhc7cg6svwyxooc6.png	\N	1
+3	PROG0001	Microservices in Action	MORGAN BRUCE PAULO A. PEREIRA	2021	t	f	2022-08-18 08:34:36	Good	\N	\N	1
+2	PROG0005	Python for Data Analiyst	WES MCKNINNEY	2020	t	f	2022-08-18 08:33:49	Good	http://res.cloudinary.com/chiendaocloudinaryserver/image/upload/v1661072721/bamlnhc7cg6svwyxooc6.png	\N	1
+5	PROG0002	Spring in Action	CRAIG WALLS	2019	t	f	2022-08-18 08:35:23	Good	\N	\N	1
+4	PROG0001	Microservices in Action	MORGAN BRUCE PAULO A. PEREIRA	2021	t	f	2022-08-18 08:34:36	Good	\N	\N	1
+6	PROG0002	Spring in Action	CRAIG WALLS	2019	t	f	2022-08-18 08:35:23	Good	\N	\N	1
+\.
+
+
+--
+-- Data for Name: book_type; Type: TABLE DATA; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+COPY qltv_vnpttech_db.book_type (book_type_id, book_type_name, deleted, created_at) FROM stdin;
+1	Programming	f	\N
+2	Novel	f	\N
+3	Sci-fi	f	\N
+4	Mathematics	f	\N
 \.
 
 
@@ -593,16 +647,6 @@ COPY qltv_vnpttech_db.borrow_form_detail (id, borrow_form_id, book_id, borrowed_
 29	28	1	Good	f	2022-08-21 21:33:07	2022-08-23 21:33:07
 30	29	6	Good	f	2022-08-21 21:33:49	2022-08-23 21:33:49
 31	29	2	Good	f	2022-08-21 21:33:49	2022-08-23 21:33:49
-\.
-
-
---
--- Data for Name: lib_staff; Type: TABLE DATA; Schema: qltv_vnpttech_db; Owner: postgres
---
-
-COPY qltv_vnpttech_db.lib_staff (staff_id, staff_username, staff_password, staff_name, staff_phone, staff_email, staff_address, deleted, staff_role) FROM stdin;
-1	chiendao1808	$2a$10$ilLAzfbrGTOoDuaV4NHJ0OYXBmsovHBAEmgk/QfGWgiiRYguzo0ZG	Dao Huy Chien	0918394508	chiendao1808@gmail.com	Hanoi	f	ROLE_MANAGER
-2	quanganh01	$2a$10$PJdvu0OrzjJUM/4sYPOqWugVN/MOD2aXO6Inq9o/nzXS2rqDjbc8a	Dang Quang Anh	0987371872	quanganh01@gmail.com	Hanoi	f	ROLE_KEEPER
 \.
 
 
@@ -699,10 +743,27 @@ COPY qltv_vnpttech_db.return_form_detail (id, return_form_id, book_id, returned_
 
 
 --
+-- Data for Name: staff; Type: TABLE DATA; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+COPY qltv_vnpttech_db.staff (staff_id, staff_username, staff_password, staff_name, staff_phone, staff_email, staff_address, deleted, staff_role) FROM stdin;
+1	chiendao1808	$2a$10$ilLAzfbrGTOoDuaV4NHJ0OYXBmsovHBAEmgk/QfGWgiiRYguzo0ZG	Dao Huy Chien	0918394508	chiendao1808@gmail.com	Hanoi	f	ROLE_MANAGER
+2	quanganh01	$2a$10$PJdvu0OrzjJUM/4sYPOqWugVN/MOD2aXO6Inq9o/nzXS2rqDjbc8a	Dang Quang Anh	0987371872	quanganh01@gmail.com	Hanoi	f	ROLE_KEEPER
+\.
+
+
+--
 -- Name: book_book_id_seq; Type: SEQUENCE SET; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
 SELECT pg_catalog.setval('qltv_vnpttech_db.book_book_id_seq', 6, true);
+
+
+--
+-- Name: book_type_book_type_id_seq; Type: SEQUENCE SET; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+SELECT pg_catalog.setval('qltv_vnpttech_db.book_type_book_type_id_seq', 4, true);
 
 
 --
@@ -784,6 +845,14 @@ ALTER TABLE ONLY qltv_vnpttech_db.book
 
 
 --
+-- Name: book_type book_type_pk; Type: CONSTRAINT; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+ALTER TABLE ONLY qltv_vnpttech_db.book_type
+    ADD CONSTRAINT book_type_pk PRIMARY KEY (book_type_id);
+
+
+--
 -- Name: borrow_form_detail borrow_form_detail_pk; Type: CONSTRAINT; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
@@ -800,10 +869,10 @@ ALTER TABLE ONLY qltv_vnpttech_db.borrow_form
 
 
 --
--- Name: lib_staff lib_staff_pk; Type: CONSTRAINT; Schema: qltv_vnpttech_db; Owner: postgres
+-- Name: staff lib_staff_pk; Type: CONSTRAINT; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
-ALTER TABLE ONLY qltv_vnpttech_db.lib_staff
+ALTER TABLE ONLY qltv_vnpttech_db.staff
     ADD CONSTRAINT lib_staff_pk PRIMARY KEY (staff_id);
 
 
@@ -871,6 +940,13 @@ CREATE UNIQUE INDEX book_book_id_uindex ON qltv_vnpttech_db.book USING btree (bo
 
 
 --
+-- Name: book_type_book_type_id_uindex; Type: INDEX; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+CREATE UNIQUE INDEX book_type_book_type_id_uindex ON qltv_vnpttech_db.book_type USING btree (book_type_id);
+
+
+--
 -- Name: borrow_form_borrow_form_id_uindex; Type: INDEX; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
@@ -888,14 +964,14 @@ CREATE UNIQUE INDEX borrow_form_detail_id_uindex ON qltv_vnpttech_db.borrow_form
 -- Name: lib_staff_staff_id_uindex; Type: INDEX; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
-CREATE UNIQUE INDEX lib_staff_staff_id_uindex ON qltv_vnpttech_db.lib_staff USING btree (staff_id);
+CREATE UNIQUE INDEX lib_staff_staff_id_uindex ON qltv_vnpttech_db.staff USING btree (staff_id);
 
 
 --
 -- Name: lib_staff_staff_username_uindex; Type: INDEX; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
-CREATE UNIQUE INDEX lib_staff_staff_username_uindex ON qltv_vnpttech_db.lib_staff USING btree (staff_username);
+CREATE UNIQUE INDEX lib_staff_staff_username_uindex ON qltv_vnpttech_db.staff USING btree (staff_username);
 
 
 --
@@ -969,6 +1045,14 @@ CREATE UNIQUE INDEX return_form_return_form_id_uindex ON qltv_vnpttech_db.return
 
 
 --
+-- Name: book book_book_type_book_type_id_fk; Type: FK CONSTRAINT; Schema: qltv_vnpttech_db; Owner: postgres
+--
+
+ALTER TABLE ONLY qltv_vnpttech_db.book
+    ADD CONSTRAINT book_book_type_book_type_id_fk FOREIGN KEY (book_type_id) REFERENCES qltv_vnpttech_db.book_type(book_type_id) ON UPDATE CASCADE;
+
+
+--
 -- Name: book book_publisher_publisher_id_fk; Type: FK CONSTRAINT; Schema: qltv_vnpttech_db; Owner: postgres
 --
 
@@ -997,7 +1081,7 @@ ALTER TABLE ONLY qltv_vnpttech_db.borrow_form_detail
 --
 
 ALTER TABLE ONLY qltv_vnpttech_db.borrow_form
-    ADD CONSTRAINT borrow_form_lib_staff_staff_id_fk FOREIGN KEY (staff_id) REFERENCES qltv_vnpttech_db.lib_staff(staff_id) ON UPDATE CASCADE;
+    ADD CONSTRAINT borrow_form_lib_staff_staff_id_fk FOREIGN KEY (staff_id) REFERENCES qltv_vnpttech_db.staff(staff_id) ON UPDATE CASCADE;
 
 
 --
@@ -1061,7 +1145,7 @@ ALTER TABLE ONLY qltv_vnpttech_db.return_form_detail
 --
 
 ALTER TABLE ONLY qltv_vnpttech_db.return_form
-    ADD CONSTRAINT return_form_lib_staff_staff_id_fk FOREIGN KEY (staff_id) REFERENCES qltv_vnpttech_db.lib_staff(staff_id) ON UPDATE CASCADE;
+    ADD CONSTRAINT return_form_lib_staff_staff_id_fk FOREIGN KEY (staff_id) REFERENCES qltv_vnpttech_db.staff(staff_id) ON UPDATE CASCADE;
 
 
 --
