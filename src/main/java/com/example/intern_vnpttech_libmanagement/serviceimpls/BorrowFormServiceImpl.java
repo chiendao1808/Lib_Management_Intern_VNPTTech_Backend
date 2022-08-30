@@ -84,11 +84,11 @@ public class BorrowFormServiceImpl implements BorrowFormService {
 //            }
 //
 //            Book borrowedBook = bookRepo.getAvailableBooks(borrowInfo.getBookCode()).get(0);
-            if(!bookRepo.findByBookId(borrowInfo.getBookId()).isPresent()) {
-                log.info("Not found the book with id"+borrowInfo.getBookId());
+            if(!bookRepo.findByBookId(borrowInfo.getBorrowBookId()).isPresent()) {
+                log.info("Not found the book with id"+borrowInfo.getBorrowBookId());
                 continue;
             }
-            Book borrowedBook = bookRepo.findByBookId(borrowInfo.getBookId()).get();
+            Book borrowedBook = bookRepo.findByBookId(borrowInfo.getBorrowBookId()).get();
             // set borrow form detais
             borrowFormDetail.setBook(borrowedBook);
             borrowFormDetail.setBorrowedBookState(borrowedBook.getBookState());

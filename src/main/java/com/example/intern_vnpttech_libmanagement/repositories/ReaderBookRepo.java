@@ -12,38 +12,38 @@ import java.util.Optional;
 @Repository
 public interface ReaderBookRepo extends JpaRepository<ReaderBook,Long> {
 
-    @Query(value = "from ReaderBook  rb where rb.deleted =false")
+    @Query(value = "select * from reader_book rb where rb.deleted =false",nativeQuery = true)
     List<ReaderBook> findAll();
 
-    @Query(value = "from ReaderBook  rb where rb.id =?1 and rb.deleted=false ")
+    @Query(value = "select * from reader_book rb where rb.id = :id and rb.deleted =false",nativeQuery = true)
     Optional<ReaderBook> findById(long id);
 
-    @Query(value = "from ReaderBook rb where rb.reader.readerId =?1 and rb.deleted = false " +
-            "order by rb.reader.readerId asc")
+    @Query(value = "select * from reader_book rb where rb.reader_id = :readerId and rb.deleted =false",nativeQuery = true)
     List<ReaderBook> findByReader(long readerId);
 
-    @Query(value = "from ReaderBook rb where rb.book.bookId =?1 and rb.deleted =false ")
+    @Query(value = "select * from reader_book rb where rb.book_id = :bookId and rb.deleted =false",nativeQuery = true)
     List<ReaderBook> findByBook(long bookId);
 
-    @Query(value = "from ReaderBook rb where rb.book.bookId=?1 and rb.reader.readerId=?2 " +
-            " and rb.returnedAt is null and rb.deleted=false")
+    @Query(value = "select * from reader_book rb where rb.reader_id = :readerId and rb.book_id =:bookId" +
+            " and rd.deleted =false",nativeQuery = true)
     Optional<ReaderBook> findByNotReturnBook(long bookId,long readerId);
 
-    @Query(value = "from ReaderBook rb where rb.reader.readerId =?1 and " +
-            "rb.book.bookId=?2 and rb.deleted =false")
+    @Query(value = "select * from reader_book rb where rb.book_id = :bookId and rb.reader_id =:readerId" +
+            " and rb.deleted =false ",nativeQuery = true)
     Optional<ReaderBook> findByReaderAndBook(long readerId, long bookId);
 
-    @Query(value = "select count(rb) from ReaderBook rb where rb.reader.readerId=?1 and rb.returnedAt is null " +
-            "and rb.deleted =false ")
+    @Query(value = "select count(rb) from reader_book rb " +
+            "inner join book b on b.book_id = rb.book_id " +
+            "where b.available =false and rb.deleted = false ",nativeQuery = true)
     int countBorrowingBook(long readerId);
 
     @Modifying
     @Transactional
-    @Query(value = "update ReaderBook rb set rb.deleted= true where rb.id =?1 and rb.deleted =false ")
+    @Query(value = "update reader_book rb set rb.deleted =true where rb.id =:id and rb.deleted =false",nativeQuery = true)
     int delete(long id);
 
     @Modifying
     @Transactional
-    @Query(value = "update ReaderBook rb set rb.deleted = true where rb.book.bookId =?1 and rb.deleted =false")
+    @Query(value = "update reader_book rb set rb.deleted = true where rb.book_id =:bookId and rb.deleted =false",nativeQuery = true)
     int deleteByBook(long bookId);
 }

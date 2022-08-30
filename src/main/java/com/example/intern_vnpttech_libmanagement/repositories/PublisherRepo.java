@@ -13,25 +13,24 @@ import java.util.Optional;
 @Repository
 public interface PublisherRepo extends JpaRepository<Publisher,Long> {
 
-    @Query(value = "from Publisher publisher where publisher.publisherId=?1 and publisher.deleted=false")
+    @Query(value = "select * from publisher pub where pub.publisher_id = :publisherId and pub.deleted = false ",nativeQuery = true)
     Optional<Publisher> findByPublisherId(long publisherId);
 
-    @Query(value = "from Publisher publisher where publisher.deleted=false")
+    @Query(value = "select * from publisher pub where pub.deleted =false order by pub.publisher_id asc",nativeQuery = true)
     List<Publisher> findAll(); // find all publisher those have deleted = false
 
-    @Query(value = "select publisher from Publisher publisher where publisher.deleted =false ")
-    List<Publisher> findAllExistting();
+//    @Query(value = "select publisher from Publisher publisher where publisher.deleted =false ")
+//    List<Publisher> findAllExistting();
 
-    @Query(value = "from Publisher publisher where (publisher.publisherPhone=?1 or publisher.publisherEmail=?2) " +
-            "and publisher.deleted =false ")
+    @Query(value = "select * from publisher pub where (pub.publisher_phone = :publisherPhone" +
+            " or pub.publisher_email = :publisherEmail) and pub.deleted =false",nativeQuery = true)
     Optional<Publisher> findByPhoneOrEmail(String publisherPhone, String publisherEmail);
 
-    @Query(value = "from Publisher publisher where publisher.publisherFax=?1 and publisher.deleted =false ")
+    @Query(value = "select * from publisher pub where pub.publisher_fax = :publisherFax and pub.deleted =false",nativeQuery = true)
     Optional<Publisher> findByFax(String publisherFax);
 
     @Modifying
     @Transactional
-    @Query(value = "update Publisher publisher set publisher.deleted=true where publisher.publisherId=?1 and" +
-            " publisher.deleted=false")
+    @Query(value = "update publisher pub set pub.deleted =true where pub.publisher_id = :publisherId and pub.deleted =false", nativeQuery = true)
     int delete(long publisherId);
 }

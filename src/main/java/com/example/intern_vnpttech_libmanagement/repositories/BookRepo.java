@@ -15,37 +15,39 @@ import java.util.Optional;
 @Repository
 public interface BookRepo extends JpaRepository<Book,Long> {
 
-    @Query(value = "from Book book where  book.deleted =false ")
+    @Query(value = "select * from book b where b.deleted=false" +
+            "order by b.book_id asc",nativeQuery = true)
     Page<Book> findAll(Pageable pageable);
 
-    @Query(value = "from Book book where book.bookId =?1 and book.deleted =false")
+    @Query(value = "select * from book b where b.book_id = :bookId and b.deleted =false",nativeQuery = true)
     Optional<Book> findByBookId(long bookId);
 
-    @Query(value = "from Book book where book.bookName like concat('%',?1,'%') and book.deleted=false ")
+    @Query(value = "select * from book b where lower(b.book_name) like lower('%:bookName%') and b.deleted =false",nativeQuery = true)
     Page<Book> findByBookName(String bookName, Pageable pageable);
 
-    @Query("from Book book where book.bookName =?1 and book.deleted =false")
+    @Query(value = "select * from book b where low(b.book_name) = lower(:bookName) and b.deleted =false",nativeQuery = true)
     Page<Book> findByExactBookName(String bookName, Pageable pageable);
 
-    @Query(value = "from Book book where book.bookAuthor like concat('%',?1,'%') and book.deleted =false")
+    @Query(value = "select * from book b where lower(b.book_author) like lower('%:bookAuthor%') and b.deleted =false",nativeQuery = true)
     Page<Book> findByBookAuthor(String bookAuthor,Pageable pageable);
 
-    @Query(value = "from Book book where book.bookCode =?1 and book.deleted =false ")
+    @Query(value = "select * from book b where b.book_code = :bookCode and b.deleted =false",nativeQuery = true)
     Page<Book> findByBookCode(String bookCode,Pageable pageable);
 
-    @Query(value = "from Book book where book.bookCode =?1 and book.deleted =false ")
+    @Query(value = "select * from book b where b.book_code = :bookCode and b.deleted =false order by b.book_id asc",nativeQuery = true)
     List<Book> findByBookCode(String bookCode);
 
-    @Query(value = "select distinct book.bookType from Book book where book.deleted =false order by  book.bookType asc")
-    List<String> getAllBookCategory();
+    @Query(value = "select distinct bt.book_type_name from book_type bt where bt.deleted =false",nativeQuery = true)
+    List<String> getAllBookType();
 
-    @Query(value = "select count (book) from Book book where book.deleted =false")
+    @Query(value = "select count(*) from book b where b.deleted =false", nativeQuery = true)
     int countAllBook();
 
-    @Query(value = "select count(book) from Book book where book.bookCode =?1 and book.deleted=false")
+    @Query(value = "select count(b) from book b where b.book_code = :bookCode and b.deleted =false",nativeQuery = true)
     int countABook(String bookCode);
 
-    @Query(value = "select count(book) from Book book where book.bookCode =?1 and book.available =true and book.deleted=false")
+    @Query(value = "select count(b) from book b where b.book_code =:bookCode and b.available =true and" +
+            " b.deleted  = false",nativeQuery = true)
     int countAbookAvailableAmount(String bookCode);
 
     @Query(value = "select distinct book.bookCode from Book book where book.deleted =false ")
@@ -53,21 +55,22 @@ public interface BookRepo extends JpaRepository<Book,Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "update Book book set book.available = ?1 where book.bookId =?2 and book.deleted =false")
+    @Query(value = "update book b " +
+            "set b.available = :available where b.book_id = :bookId and b.deleted =false",nativeQuery = true)
     int setAvailable(boolean available,long bookId);
 
-    @Query(value = "from Book book where book.bookCode =?1 and book.available =true and book.deleted =false " +
-            "order by book.bookId asc")
+    @Query(value = "select * from book b where b.book_code = : bookCode and b.available =true " +
+            "b.deleted =false order by b.book_id",nativeQuery = true)
     List<Book> getAvailableBooks(String bookCode);
 
     @Modifying
     @Transactional
-    @Query(value = "update Book book set book.deleted =true where book.bookId =?1 and book.deleted =false ")
+    @Query(value = "update book b set b.deleted = true where b.book_id = :bookId and b.deleted =false",nativeQuery = true)
     int deleteById(long bookId);
 
     @Modifying
     @Transactional
-    @Query("update Book book set book.deleted =true where book.bookCode =?1 and book.deleted =false ")
+    @Query(value = "update book b set b.deleted = true where b.book_code = :bookCode and b.deleted =false",nativeQuery = true)
     int deleteByBookCode(String bookCode);
 
 }
