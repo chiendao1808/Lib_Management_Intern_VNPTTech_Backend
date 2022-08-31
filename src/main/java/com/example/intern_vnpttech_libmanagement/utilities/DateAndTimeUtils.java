@@ -21,12 +21,14 @@ public class DateAndTimeUtils {
     }
 
     // check if a timestamp in a month/year
-    public static boolean inMonthCheck(Timestamp ts, int month, int year)
+    // option = 1 -> monthly, option = 2 -> yearly
+    public static boolean inTimeCheck(Timestamp ts, int month, int year,int option)
     {
         Calendar calendar =Calendar.getInstance();
         calendar.setTime(ts);
-        if(calendar.get(Calendar.MONTH)+1==month && calendar.get(Calendar.YEAR)==year)
-            return true;
-        else return false;
+        if(option==1){
+            return calendar.get(Calendar.MONTH)+1==month && calendar.get(Calendar.YEAR)==year;
+        }
+        else return calendar.get(Calendar.YEAR) == year;
     }
 }

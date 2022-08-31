@@ -18,7 +18,7 @@ public class CardStatistics {
 
      private int year;
 
-     private long totalNumberPublishedCardInMonth;
+     private long totalNumberPublishedCard;
 
      private Map<String,CardStatisticsDetails> detailNumbers;
 
@@ -26,7 +26,7 @@ public class CardStatistics {
      {
           this.month=0;
           this.year=1970;
-          this.totalNumberPublishedCardInMonth=0;
+          this.totalNumberPublishedCard=0;
           detailNumbers = new HashMap<>();
      }
 

@@ -77,19 +77,12 @@ public class BorrowFormServiceImpl implements BorrowFormService {
         {
             BorrowFormDetail borrowFormDetail = new BorrowFormDetail();
             ReaderBook newReaderBook = new ReaderBook();
-//            if(bookRepo.getAvailableBooks(borrowInfo.getBookCode()).isEmpty())
-//            {
-//                log.info("This book now is no available");
-//                continue;
-//            }
-//
-//            Book borrowedBook = bookRepo.getAvailableBooks(borrowInfo.getBookCode()).get(0);
             if(!bookRepo.findByBookId(borrowInfo.getBorrowBookId()).isPresent()) {
                 log.info("Not found the book with id"+borrowInfo.getBorrowBookId());
                 continue;
             }
             Book borrowedBook = bookRepo.findByBookId(borrowInfo.getBorrowBookId()).get();
-            // set borrow form detais
+            // set borrow form details
             borrowFormDetail.setBook(borrowedBook);
             borrowFormDetail.setBorrowedBookState(borrowedBook.getBookState());
             borrowFormDetail.setDeleted(false);

@@ -42,25 +42,28 @@ public class StatisticService {
     private BookTypeRepo bookTypeRepo;
 
 
-    public CardStatistics getCardStatistic(int month, int year)
+    // option = 1 -> montly statistics , option = 2 -> yearly statistics
+
+    public CardStatistics getCardStatistic(int month, int year,int option)
     {
         try{
             List<ReaderCard> readerCardList = readerCardRepo.findAll();
             CardStatistics cardStatistics = new CardStatistics();
             long numberPublishedCardInMonth = readerCardList
-                    .stream().filter(readerCard -> DateAndTimeUtils.inMonthCheck(readerCard.getPublishedAt(),month,year)).count();
+                    .stream().filter(readerCard -> DateAndTimeUtils.inTimeCheck(readerCard.getPublishedAt(),month,year,option)).count();
             Map<String, CardStatisticsDetails> detailNumbers= cardStatistics.getDetailNumbers();
             cardStatistics.setMonth(month);
             cardStatistics.setYear(year);
             List<ReaderCardType> cardTypeList = cardTypeRepo.getAllCardType();
             cardTypeList.stream().forEach(readerCardType -> {
-                long numberPublishCard = readerCardList.stream().filter(readerCard -> {
-                    return DateAndTimeUtils.inMonthCheck(readerCard.getPublishedAt(),month,year) && readerCard.getCardId()==readerCardType.getCardTypeId();
-                }).count();
+                long numberPublishCard = readerCardList.stream()
+                                                        .filter(readerCard -> DateAndTimeUtils.inTimeCheck(readerCard.getPublishedAt(),month,year,option)
+                                                        && readerCard.getCardId()==readerCardType.getCardTypeId())
+                                                        .count();
                 detailNumbers.put(readerCardType.getCardTypeName(),new CardStatisticsDetails(numberPublishCard,(float) numberPublishCard/numberPublishedCardInMonth));
             });
             cardStatistics.setDetailNumbers(detailNumbers);
-            cardStatistics.setTotalNumberPublishedCardInMonth(numberPublishedCardInMonth);
+            cardStatistics.setTotalNumberPublishedCard(numberPublishedCardInMonth);
             return cardStatistics;
         } catch (Exception ex)
         {
@@ -70,7 +73,7 @@ public class StatisticService {
     }
 
     // make a statistic of book's types based on the number of borrowed turns
-    public BookStatistics getBookTypeStatistic(int month, int year)
+    public BookStatistics getBookTypeStatistic(int month, int year,int option)
     {
         try{
           List<ReaderBook> readerBookList = readerBookRepo.findAll();
@@ -78,16 +81,16 @@ public class StatisticService {
           bookStatistics.setMonth(month);
           bookStatistics.setYear(year);
           long totalBorrowedTurns = readerBookList.stream().filter(readerBook -> {
-              return DateAndTimeUtils.inMonthCheck(readerBook.getBorrowedAt(),month,year);
+              return DateAndTimeUtils.inTimeCheck(readerBook.getBorrowedAt(),month,year,option);
           }).count();
           Map<String, BookStatisticsDetails> details = bookStatistics.getDetails();
           List<BookType> bookTypeList = bookTypeRepo.getAllBookType();
           bookTypeList.stream().forEach(bookType -> {
               long numberBorrowedTurns = readerBookList
-                      .stream()
-                      .filter(readerBook -> DateAndTimeUtils.inMonthCheck(readerBook.getBorrowedAt(),month,year)
-                              && readerBook.getBook().getBookType().getBookTypeId()==bookType.getBookTypeId())
-                      .count();
+                                          .stream()
+                                          .filter(readerBook -> DateAndTimeUtils.inTimeCheck(readerBook.getBorrowedAt(),month,year,option)
+                                                  && readerBook.getBook().getBookType().getBookTypeId()==bookType.getBookTypeId())
+                                          .count();
               details.put(bookType.getBookTypeName(),
                             new BookStatisticsDetails(numberBorrowedTurns,(float)numberBorrowedTurns/totalBorrowedTurns));
           });
@@ -100,4 +103,6 @@ public class StatisticService {
             return null;
         }
     }
+
+
 }
