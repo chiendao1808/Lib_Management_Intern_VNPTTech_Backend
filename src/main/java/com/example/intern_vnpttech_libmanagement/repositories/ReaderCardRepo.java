@@ -1,4 +1,4 @@
-package com.example.intern_vnpttech_libmanagement.services;
+package com.example.intern_vnpttech_libmanagement.repositories;
 
 import com.example.intern_vnpttech_libmanagement.entities.ReaderCard;
 import org.springframework.data.jpa.repository.JpaRepository;

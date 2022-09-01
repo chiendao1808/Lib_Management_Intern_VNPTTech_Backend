@@ -20,6 +20,18 @@ public class ReaderServiceImpl implements ReaderService {
     @Autowired
     private ReaderRepo readerRepo;
 
+
+    @Override
+    public Page<Reader> findByCriteria(Long readerId, String readerName, String readerPhone, String readerEmail, Pageable pageable) {
+        try{
+            return readerRepo.findByCriteria(readerId,readerName,readerPhone,readerEmail,pageable);
+        } catch (Exception ex)
+        {
+            log.error("Get readers by criterias error",ex);
+            return Page.empty(pageable);
+        }
+    }
+
     @Override
     public Page<Reader> findAll(Pageable pageable) {
         try{

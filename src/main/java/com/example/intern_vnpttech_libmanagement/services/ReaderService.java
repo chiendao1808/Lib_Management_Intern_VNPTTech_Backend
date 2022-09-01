@@ -11,6 +11,8 @@ import java.util.Optional;
 @Service
 public interface ReaderService {
 
+    Page<Reader> findByCriteria(Long readerId, String readerName, String readerPhone, String readerEmail, Pageable pageable);
+
     Page<Reader> findAll(Pageable pageable);
 
     Optional<Reader> findById(long readerId);

@@ -2,7 +2,7 @@ package com.example.intern_vnpttech_libmanagement.serviceimpls;
 
 import com.example.intern_vnpttech_libmanagement.dto.entity_dto.ReaderCardDTO;
 import com.example.intern_vnpttech_libmanagement.entities.ReaderCard;
-import com.example.intern_vnpttech_libmanagement.services.ReaderCardRepo;
+import com.example.intern_vnpttech_libmanagement.repositories.ReaderCardRepo;
 import com.example.intern_vnpttech_libmanagement.services.ReaderCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

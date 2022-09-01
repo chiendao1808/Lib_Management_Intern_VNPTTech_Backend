@@ -2,6 +2,7 @@ package com.example.intern_vnpttech_libmanagement.controllers;
 
 import com.example.intern_vnpttech_libmanagement.dto.request.BodyRequest;
 import com.example.intern_vnpttech_libmanagement.dto.entity_dto.BookRecordDTO;
+import com.example.intern_vnpttech_libmanagement.dto.info.NewBookDTO;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
 import com.example.intern_vnpttech_libmanagement.entities.Book;
 import com.example.intern_vnpttech_libmanagement.entities.Publisher;
@@ -13,11 +14,11 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -30,6 +31,30 @@ public class BookController {
 
     @Autowired
     private PublisherService publisherService;
+
+    // Gộp tất cả api get thành 1 API getAll : truyền tất cả các params cần thiết
+
+    /*
+    * Filter API for book
+    */
+    @Operation(summary = "Get books with a criteria")
+    @GetMapping(path = "/get")
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> get(@RequestParam(name = "book_id",required = false,defaultValue = "0")Long bookId,
+                                 @RequestParam(name = "book_name",required = false,defaultValue = "null") String bookName,
+                                 @RequestParam(name = "book_author",required = false,defaultValue = "null") String bookAuthor,
+                                 @RequestParam(name = "book_code",required = false,defaultValue = "null")String bookCode,
+                                 @RequestParam(name = "publisher_id",required = false,defaultValue = "0") Long publisherId,
+                                 @RequestParam(name = "all",required = false,defaultValue = "false") Boolean all,
+                                 @RequestParam(name = "page",defaultValue = "1") Integer page,
+                                 Pageable pageable,
+                                 HttpServletRequest request)
+    {
+        pageable =PageRequest.of(page-1,2);
+        if(all.booleanValue()==true)
+            return ResponseEntity.ok(bookService.findAll(pageable));
+        return ResponseEntity.ok(bookService.findByCriteria(bookId,bookName,bookAuthor,bookCode,publisherId,all,pageable));
+    }
 
     @Operation(summary = "Find all book's records from database")
     @SecurityRequirement(name = "methodAuth")
@@ -73,9 +98,9 @@ public class BookController {
     }
 
     @Operation(summary = "Check a book if it available for borrowing ")
-    @GetMapping(path = "/available")
+    @GetMapping(path = "/available/{book_id}")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> checkBookAvailable(@RequestParam(name = "book_id") long bookId)
+    public ResponseEntity<?> checkBookAvailable(@PathVariable(name = "book_id") long bookId)
     {
         return bookService.findByBookId(bookId).isPresent() && bookService.findByBookId(bookId).get().isAvailable()==true
                 ?ResponseEntity.status(200).body(new MessageResponse("Available","success"))
@@ -97,12 +122,13 @@ public class BookController {
     }
 
     @Operation(summary = "Add a book")
-    @PostMapping(path = "/add")
+    @PostMapping(path = "/add-old")
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> add(@RequestBody Book book,
                                  @RequestParam(name = "publisher_id") long publisherId,
                                  @RequestParam(name = "book_type_id") long bookTypeId,
                                  @RequestParam(name = "amount") int amount) throws CloneNotSupportedException
+            // đưa tất cả đưa vào DTO , NewBookDTO = Book + params
     {
         Optional<Publisher> publisherOptional = publisherService.findById(publisherId);
         if(!publisherOptional.isPresent())
@@ -117,41 +143,103 @@ public class BookController {
         return ResponseEntity.status(201).body(new MessageResponse("Add book sucessfully","success"));
     }
 
-    @Operation(summary = "Update all records of a book that have the same book's code")
-    @PutMapping(path = "/update-all")
+
+    /*
+    * Provide some a book's infos and amount of records -> add the book's records to db
+    * */
+    @Operation(summary = "Add a book with a number of book's records with")
+    @PostMapping(path = "/add")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> update(@RequestParam(name = "book_code") String bookCode,
-                                    @RequestBody BookRecordDTO bookRecordDTO)
+    public ResponseEntity<?> addBook(@RequestBody NewBookDTO newBookDTO) throws CloneNotSupportedException
     {
-        if(bookService.findByBookCode(bookCode).isEmpty())
-           return ResponseEntity.status(204).body(new MessageResponse("Book not found (byte bookcode)","fail"));
-        else bookRecordDTO.setBookCode(bookCode);
-        return bookService.updateAll(bookRecordDTO).isPresent()
-                ?ResponseEntity.status(201).body(new MessageResponse("Update book successfully","success"))
-                :ResponseEntity.status(304).body(new MessageResponse("Update book fail","fail"));
+        Optional<Publisher> publisherOptional = publisherService.findById(newBookDTO.getPublisherId());
+        if(!publisherOptional.isPresent())
+            return ResponseEntity.status(200).body(new MessageResponse("Publisher not found","fail"));
+        for(int i = 0; i< newBookDTO.getAmount(); i++)
+        {
+            Book newBook = (Book) newBookDTO.getBook().clone();
+            newBook.setPublisher(publisherOptional.get());
+            if(!bookService.add(newBook).isPresent())
+                return ResponseEntity.status(200).body(new MessageResponse("Add book fail","fail"));
+        }
+        return ResponseEntity.status(201).body(new MessageResponse("Add book sucessfully","success"));
     }
 
-    @Operation(summary = "Update a book by id")
+
+    /*
+    * New Update API for book
+    * */
+    @Operation(summary = "Update all records of a book or a book's record")
     @PutMapping(path = "/update")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> update(@RequestParam(name = "book_id") long bookId,
-                                    @RequestBody BookRecordDTO bookRecordDTO)
+    public ResponseEntity<?> updateByBookCode(@RequestBody BookRecordDTO bookRecordDTO)
     {
-        if(!bookService.findByBookId(bookId).isPresent())
+        if(bookRecordDTO.getBookCode()!=null) {
+            if (bookService.findByBookCode(bookRecordDTO.getBookCode()).isEmpty())
+                return ResponseEntity.status(204).body(new MessageResponse("Book not found (byte bookcode)", "fail"));
+            return bookService.updateAll(bookRecordDTO).isPresent()
+                    ? ResponseEntity.status(201).body(new MessageResponse("Update book successfully", "success"))
+                    : ResponseEntity.status(304).body(new MessageResponse("Update book fail", "fail"));
+        }
+        else if(bookRecordDTO.getBookId()!=null)
+        {
+            if(!bookService.findByBookId(bookRecordDTO.getBookId()).isPresent())
+                return ResponseEntity.status(200).body(new MessageResponse("Book not found","fail"));
+            return bookService.update(bookRecordDTO).isPresent()
+                    ?ResponseEntity.status(201).body(new MessageResponse("Update book successfully","success"))
+                    :ResponseEntity.status(200).body(new MessageResponse("Update book fail","fail"));
+        }
+        return ResponseEntity.status(200).body(new MessageResponse("Both BookId and BookCode are null","fail"));
+    }
+
+
+    @Operation(summary = "Update a book by id")
+    @PutMapping(path = "/update-rec")
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> update(@RequestBody BookRecordDTO bookRecordDTO)
+    {
+        if(!bookService.findByBookId(bookRecordDTO.getBookId()).isPresent())
             return ResponseEntity.status(200).body(new MessageResponse("Book not found","fail"));
-        else bookRecordDTO.setBookId(bookId);
         return bookService.update(bookRecordDTO).isPresent()
                 ?ResponseEntity.status(201).body(new MessageResponse("Update book successfully","success"))
                 :ResponseEntity.status(200).body(new MessageResponse("Update book fail","fail"));
     }
 
+
     @Operation(summary = "Delete a book")
-    @DeleteMapping(path = "/delete")
+    @DeleteMapping(path = "/delete-by-bookcode")
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> deleteByBookCode(@RequestParam(name = "book_code") String bookCode)
     {
         return bookService.deleteByBookCode(bookCode)
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete book successfully ","success"))
                 : ResponseEntity.status(200).body(new MessageResponse("Delete book fail","fail"));
+    }
+
+
+    /*
+    * Provide book's record id or a book's code -> delete a record or all records of a book
+    * New Delete API for book
+     */
+    @Operation(summary = "Delete a book's record or all records of a book")
+    @DeleteMapping(path = "/delete/{book_id}")
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> deleteBook(@PathVariable(name = "book_id",required = false) Long bookId,
+                                        @RequestParam(name = "book_code", required = false,defaultValue ="null") String bookCode)
+    {
+        if(bookCode!=null)
+            return bookService.deleteByBookCode(bookCode)
+                    ? ResponseEntity.status(200)
+                    .body(new MessageResponse("Deleted the book with code: "+bookCode+" successfully","success"))
+                    :ResponseEntity.status(200)
+                    .body(new MessageResponse("Deleted the book with code: "+bookCode+" fail","fail"));
+
+        else if(bookId!=null)
+            return bookService.deleteById(bookId)
+                    ? ResponseEntity.status(200)
+                    .body(new MessageResponse("Deleted the book's record with Id: "+bookId.longValue()+" successfully","success"))
+                    : ResponseEntity.status(200)
+                    .body(new MessageResponse("Deleted the book's record with Id: "+bookId.longValue()+" fail","fail"));
+        else return ResponseEntity.status(200).body(new MessageResponse("Not found the book's record or the book","fail"));
     }
 }

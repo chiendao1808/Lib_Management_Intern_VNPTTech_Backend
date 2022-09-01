@@ -11,7 +11,7 @@ import com.example.intern_vnpttech_libmanagement.repositories.BorrowFormDetailRe
 import com.example.intern_vnpttech_libmanagement.repositories.BorrowFormRepo;
 import com.example.intern_vnpttech_libmanagement.repositories.ReaderBookRepo;
 import com.example.intern_vnpttech_libmanagement.services.BorrowFormService;
-import com.example.intern_vnpttech_libmanagement.services.ReaderCardRepo;
+import com.example.intern_vnpttech_libmanagement.repositories.ReaderCardRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

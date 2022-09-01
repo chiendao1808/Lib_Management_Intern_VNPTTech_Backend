@@ -39,11 +39,11 @@ public interface ReaderBookRepo extends JpaRepository<ReaderBook,Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "update reader_book rb set rb.deleted =true where rb.id =:id and rb.deleted =false",nativeQuery = true)
+    @Query(value = "update reader_book set deleted =true where id =:id and deleted =false",nativeQuery = true)
     int delete(long id);
 
     @Modifying
     @Transactional
-    @Query(value = "update reader_book rb set rb.deleted = true where rb.book_id =:bookId and rb.deleted =false",nativeQuery = true)
+    @Query(value = "update reader_book set deleted = true where book_id =:bookId and deleted =false",nativeQuery = true)
     int deleteByBook(long bookId);
 }

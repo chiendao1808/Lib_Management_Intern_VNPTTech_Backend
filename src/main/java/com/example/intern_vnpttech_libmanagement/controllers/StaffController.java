@@ -65,9 +65,6 @@ public class StaffController {
     {
         long staffId = securityService.getStaffFromRequest(request).getStaffId();
         staffDTO.setStaffId(staffId);
-//        if(!libStaffService.findById(staffId).isPresent())
-//            return ResponseEntity.status(204).body(new MessageResponse("Staff not found","fail"));
-//        else staffDTO.setStaffId(staffId);
         return staffService.update(staffDTO).isPresent()
                 ? ResponseEntity.status(201).body(new MessageResponse("Update staff successfully","success"))
                 : ResponseEntity.status(200).body(new MessageResponse("Update staff fail","fail"));
@@ -80,8 +77,6 @@ public class StaffController {
                                             HttpServletRequest request)
     {
         long staffId = securityService.getStaffFromRequest(request).getStaffId();
-//        if(!libStaffService.findById(staffId).isPresent())
-//            return ResponseEntity.status(204).body(new MessageResponse("Staff not found","fail"));
         String encodedCurrentPass = staffService.findById(staffId).get().getStaffPassword();
         if(!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(),encodedCurrentPass))
             return ResponseEntity.status(200).body(new MessageResponse("Current password was wrong","fail"));
@@ -104,6 +99,5 @@ public class StaffController {
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete staff successfully","success"))
                 :ResponseEntity.status(200).body(new MessageResponse("Delete staff fail","fail"));
     }
-
 
 }

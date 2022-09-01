@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookRecordDTO {
 
-    private  long bookId;
+    private  Long bookId;
 
     private String bookCode;
 

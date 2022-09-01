@@ -26,6 +26,19 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepo bookRepo;
 
+
+    @Override
+    public Page<Book> findByCriteria(long bookId, String bookName, String bookAuthor, String bookCode, long publisherId, boolean all,Pageable pageable) {
+        try{
+           // System.out.println(bookRepo.findByCriteria(bookId, bookName, bookAuthor, bookCode, publisherId,pageable).getContent().size());
+            return bookRepo.findByCriteria(bookId, bookName, bookAuthor, bookCode, publisherId,pageable);
+        } catch (Exception ex)
+        {
+            log.error("Get books error at "+this.getClass().getName()+".get()",ex);
+            return Page.empty(pageable);
+        }
+    }
+
     // find all book's records
     @Override
     public Page<Book> findAll(Pageable pageable) {

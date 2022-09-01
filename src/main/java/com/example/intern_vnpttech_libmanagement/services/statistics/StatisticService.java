@@ -12,7 +12,7 @@ import com.example.intern_vnpttech_libmanagement.repositories.BookRepo;
 import com.example.intern_vnpttech_libmanagement.repositories.BookTypeRepo;
 import com.example.intern_vnpttech_libmanagement.repositories.ReaderBookRepo;
 import com.example.intern_vnpttech_libmanagement.repositories.ReaderCardTypeRepo;
-import com.example.intern_vnpttech_libmanagement.services.ReaderCardRepo;
+import com.example.intern_vnpttech_libmanagement.repositories.ReaderCardRepo;
 import com.example.intern_vnpttech_libmanagement.utilities.DateAndTimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

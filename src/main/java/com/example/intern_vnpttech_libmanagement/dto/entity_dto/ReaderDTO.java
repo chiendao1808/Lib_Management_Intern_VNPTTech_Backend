@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReaderDTO {
 
-    private  long readerId;
+    private  Long readerId;
 
     private String readerName;
 

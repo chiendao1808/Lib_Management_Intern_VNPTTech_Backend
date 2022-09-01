@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping(path = "/libmng/api/reader")
 @Tag(name = "Reader Controller ")
@@ -21,6 +23,30 @@ public class ReaderController {
 
     @Autowired
     private ReaderService readerService;
+
+
+    /*
+    * Filter API for reader
+    */
+    @Operation(summary = "Get readers with a criteria")
+    @GetMapping(path = "/get")
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> get(@RequestParam(name = "reader_id",required = false,defaultValue = "-1") Long readerId,
+                                 @RequestParam(name = "reader_name",required = false,defaultValue = "--null--")String readerName,
+                                 @RequestParam(name = "reader_phone",required = false,defaultValue = "0000000000")String readerPhone,
+                                 @RequestParam(name = "reader_email",required = false,defaultValue = "abc@gmail.com") String readerEmail,
+                                 @RequestParam(name = "allreaders",required = false,defaultValue = "false") Boolean all,
+                                 @RequestParam(name = "page",defaultValue = "1") int page,
+                                 Pageable pageable,
+                                 HttpServletRequest request)
+    {
+        pageable =PageRequest.of(page-1,2);
+        if(all.booleanValue()==true)
+        {
+            return ResponseEntity.ok(readerService.findAll(pageable));
+        }
+        return ResponseEntity.ok(readerService.findByCriteria(readerId,readerName,readerPhone,readerEmail,pageable));
+    }
 
     @Operation(summary = "Find all readers")
     @GetMapping(path = "/find-all")
@@ -65,21 +91,20 @@ public class ReaderController {
     @Operation(summary = "Update  reader's infos")
     @PutMapping(path = "/update")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> update(@RequestBody ReaderDTO readerDTO,
-                                    @RequestParam(name = "reader_id") long readerId)
+    public ResponseEntity<?> update(@RequestBody ReaderDTO readerDTO)
     {
-        if(!readerService.findById(readerId).isPresent())
+        if(!readerService.findById(readerDTO.getReaderId()).isPresent())
             return ResponseEntity.status(200).body(new MessageResponse("Reader not found","fail"));
-        else readerDTO.setReaderId(readerId);
+        else readerDTO.setReaderId(readerDTO.getReaderId());
         return readerService.update(readerDTO).isPresent()
                 ? ResponseEntity.status(201).body(new MessageResponse("Update reader successfully","success"))
                 : ResponseEntity.status(200).body(new MessageResponse("Update reader fail","fail"));
     }
 
     @Operation(summary = "Delete a reader")
-    @DeleteMapping(path = "/delete")
+    @DeleteMapping(path = "/delete/{reader_id}")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> delete(@RequestParam(name = "reader_id") long readerId)
+    public ResponseEntity<?> delete(@PathVariable(name = "reader_id") Long readerId)
     {
         return readerService.delete(readerId)
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete reader successfully","success"))
