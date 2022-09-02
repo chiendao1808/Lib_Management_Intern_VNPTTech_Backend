@@ -50,6 +50,9 @@ public interface BookRepo extends JpaRepository<Book,Long> {
     @Query(value = "select * from book b where b.book_code = :bookCode and b.deleted =false",nativeQuery = true)
     Page<Book> findByBookCode(String bookCode,Pageable pageable);
 
+    @Query(value = "select count(*) from book b where b.book_code= :bookCode"+SQLBookConstants.DELETED_CHECK,nativeQuery = true)
+    int existsByBookCode(String bookCode);
+
     @Query(value = "select * from book b where b.book_code = :bookCode and b.deleted =false order by b.book_id asc",nativeQuery = true)
     List<Book> findByBookCode(String bookCode);
 

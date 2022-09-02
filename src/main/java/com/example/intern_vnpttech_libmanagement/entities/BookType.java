@@ -2,6 +2,7 @@ package com.example.intern_vnpttech_libmanagement.entities;
 
 import com.example.intern_vnpttech_libmanagement.constants.DatabaseConstants;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(schema = DatabaseConstants.databaseName , name = "book_type")

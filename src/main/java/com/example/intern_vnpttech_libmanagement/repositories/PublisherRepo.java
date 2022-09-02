@@ -19,6 +19,9 @@ public interface PublisherRepo extends JpaRepository<Publisher,Long> {
     @Query(value = "select * from publisher pub where pub.deleted =false order by pub.publisher_id asc",nativeQuery = true)
     List<Publisher> findAll(); // find all publisher those have deleted = false
 
+    @Query(value = "select * from publisher pub where pub.publisher_name = :publisherName and pub.deleted =false",nativeQuery = true)
+    List<Publisher> findByPublisherName(String publisherName);
+
 //    @Query(value = "select publisher from Publisher publisher where publisher.deleted =false ")
 //    List<Publisher> findAllExistting();
 
@@ -28,6 +31,9 @@ public interface PublisherRepo extends JpaRepository<Publisher,Long> {
 
     @Query(value = "select * from publisher pub where pub.publisher_fax = :publisherFax and pub.deleted =false",nativeQuery = true)
     Optional<Publisher> findByFax(String publisherFax);
+
+    @Query(value = "select count(*) from publisher pub where pub.publisher_name = :publisherName and pub.deleted =false",nativeQuery = true)
+    int existedPublisher(String publisherName);
 
     @Modifying
     @Transactional

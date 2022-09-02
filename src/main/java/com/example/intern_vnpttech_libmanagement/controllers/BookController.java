@@ -6,6 +6,7 @@ import com.example.intern_vnpttech_libmanagement.dto.info.NewBookDTO;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
 import com.example.intern_vnpttech_libmanagement.entities.Book;
 import com.example.intern_vnpttech_libmanagement.entities.Publisher;
+import com.example.intern_vnpttech_libmanagement.serviceimpls.file_process.ExcelFileService;
 import com.example.intern_vnpttech_libmanagement.services.BookService;
 import com.example.intern_vnpttech_libmanagement.services.PublisherService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -31,6 +33,9 @@ public class BookController {
 
     @Autowired
     private PublisherService publisherService;
+
+    @Autowired
+    private ExcelFileService excelFileService;
 
     // Gộp tất cả api get thành 1 API getAll : truyền tất cả các params cần thiết
 
@@ -163,6 +168,15 @@ public class BookController {
                 return ResponseEntity.status(200).body(new MessageResponse("Add book fail","fail"));
         }
         return ResponseEntity.status(201).body(new MessageResponse("Add book sucessfully","success"));
+    }
+
+    @Operation(summary = "Import books through a excel file")
+    @PostMapping(path = "/import")
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> importBook(@RequestParam(name = "excel_file")MultipartFile multipartFile)
+    {
+        excelFileService.importBookFromExcelFile(multipartFile);
+        return ResponseEntity.ok("");
     }
 
 
