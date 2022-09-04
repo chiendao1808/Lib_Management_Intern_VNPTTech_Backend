@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "libmng/api/statistic")
@@ -26,10 +28,10 @@ public class StatisticController {
     @Parameter(name = "option",description = "option =1 -> monthly statistics , option =2 -> yearly statistics")
     @GetMapping(path = "/card/stats/monthly")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> cardMonthlyStatistic(@RequestParam(name = "month") int month,
-                                           @RequestParam(name = "year") int year,
-                                           @RequestParam(name = "option") int option,
-                                           HttpServletRequest request)
+    public ResponseEntity<?> cardMonthlyStatistic( @RequestParam(name = "month") int month,
+                                                   @RequestParam(name = "year") int year,
+                                                   @RequestParam(name = "option") int option,
+                                                   HttpServletRequest request)
     {
         return ResponseEntity.ok(statisticService.getCardStatistic(month,year,option));
     }
@@ -50,25 +52,39 @@ public class StatisticController {
     @Parameter(name = "option",description = "option =1 -> monthly statistics , option =2 -> yearly statistics")
     @GetMapping(path = "/card/stats/yearly")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> cardYearlyStatistic(@RequestParam(name = "month",required = false) Integer month,
-                                                  @RequestParam(name = "year") Integer year,
-                                                 @RequestParam(name = "option") int option,
+    public ResponseEntity<?> cardYearlyStatistic(@RequestParam(name = "year") Integer year,
+                                                 @RequestParam(name = "option") int option, // option =1 -> per month, option ==2 -> all a year
                                                   HttpServletRequest request)
     {
-        if(month==null) month=0;
-        return ResponseEntity.ok(statisticService.getCardStatistic(month,year,option));
+      if(option==2)
+          return ResponseEntity.ok(statisticService.getCardStatistic(0,year,option));
+      else {
+          Map<String, Object> resDTO = new LinkedHashMap<>();
+          resDTO.put("Title", "Card's  Yearly Statistics");
+          for (int m = 1; m <= 12; m++) {
+              resDTO.put(m + "/" + year, statisticService.getCardStatistic(m, year, 1));
+          }
+          return ResponseEntity.ok(resDTO);
+      }
     }
 
     @Operation(summary = "Get statistics of book's type borrowed in a year")
     @Parameter(name = "option",description = "option =1 -> monthly statistics , option =2 -> yearly statistics")
     @GetMapping(path = "/book-type/stats/yearly")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> bookTypeYearlyStatistic(@RequestParam(name = "month", required = false) Integer month,
-                                                      @RequestParam(name = "year") Integer year,
-                                                     @RequestParam(name = "option") int option,
+    public ResponseEntity<?> bookTypeYearlyStatistic(@RequestParam(name = "year") Integer year,
+                                                     @RequestParam(name = "option") int option, // option =1 -> per month, option ==2 -> all a year
                                                       HttpServletRequest request)
     {
-        if(month==null) month=0;
-        return ResponseEntity.ok(statisticService.getBookTypeStatistic(month,year,option));
+        if(option ==2)
+            return ResponseEntity.ok(statisticService.getBookTypeStatistic(0,year,option));
+        else {
+            Map<String, Object> resDTO = new LinkedHashMap<>();
+            resDTO.put("Title", "BookType's Yearly Statistics");
+            for (int m = 1; m <= 12; m++) {
+                resDTO.put(m + "/" + year, statisticService.getBookTypeStatistic(m, year, 1));
+            }
+            return ResponseEntity.ok(resDTO);
+        }
     }
 }

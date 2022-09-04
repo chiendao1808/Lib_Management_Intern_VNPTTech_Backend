@@ -43,7 +43,6 @@ public class StatisticService {
 
 
     // option = 1 -> montly statistics , option = 2 -> yearly statistics
-
     public CardStatistics getCardStatistic(int month, int year,int option)
     {
         try{
@@ -51,19 +50,19 @@ public class StatisticService {
             CardStatistics cardStatistics = new CardStatistics();
             long numberPublishedCardInMonth = readerCardList
                     .stream().filter(readerCard -> DateAndTimeUtils.inTimeCheck(readerCard.getPublishedAt(),month,year,option)).count();
-            Map<String, CardStatisticsDetails> detailNumbers= cardStatistics.getDetailNumbers();
+            Map<String, CardStatisticsDetails> detailNumbers= cardStatistics.getDetails();
             cardStatistics.setMonth(month);
             cardStatistics.setYear(year);
+            cardStatistics.setTotalPublishedCards(numberPublishedCardInMonth);
             List<ReaderCardType> cardTypeList = cardTypeRepo.getAllCardType();
             cardTypeList.stream().forEach(readerCardType -> {
                 long numberPublishCard = readerCardList.stream()
                                                         .filter(readerCard -> DateAndTimeUtils.inTimeCheck(readerCard.getPublishedAt(),month,year,option)
                                                         && readerCard.getCardId()==readerCardType.getCardTypeId())
                                                         .count();
-                detailNumbers.put(readerCardType.getCardTypeName(),new CardStatisticsDetails(numberPublishCard,(float) numberPublishCard/numberPublishedCardInMonth));
+                detailNumbers.put(readerCardType.getCardTypeName(),new CardStatisticsDetails(numberPublishCard,(float) numberPublishCard/(numberPublishedCardInMonth!=0?numberPublishedCardInMonth:1)));
             });
-            cardStatistics.setDetailNumbers(detailNumbers);
-            cardStatistics.setTotalNumberPublishedCard(numberPublishedCardInMonth);
+            cardStatistics.setDetails(detailNumbers);
             return cardStatistics;
         } catch (Exception ex)
         {
@@ -83,6 +82,7 @@ public class StatisticService {
           long totalBorrowedTurns = readerBookList.stream().filter(readerBook -> {
               return DateAndTimeUtils.inTimeCheck(readerBook.getBorrowedAt(),month,year,option);
           }).count();
+          bookStatistics.setTotalBorrowedTurns(totalBorrowedTurns);
           Map<String, BookStatisticsDetails> details = bookStatistics.getDetails();
           List<BookType> bookTypeList = bookTypeRepo.getAllBookType();
           bookTypeList.stream().forEach(bookType -> {
@@ -92,10 +92,9 @@ public class StatisticService {
                                                   && readerBook.getBook().getBookType().getBookTypeId()==bookType.getBookTypeId())
                                           .count();
               details.put(bookType.getBookTypeName(),
-                            new BookStatisticsDetails(numberBorrowedTurns,(float)numberBorrowedTurns/totalBorrowedTurns));
+                            new BookStatisticsDetails(numberBorrowedTurns,(float)numberBorrowedTurns/(totalBorrowedTurns!=0?totalBorrowedTurns:1)));
           });
           bookStatistics.setDetails(details);
-          bookStatistics.setTotalBorrowedTurns(totalBorrowedTurns);
           return bookStatistics;
         } catch (Exception ex)
         {

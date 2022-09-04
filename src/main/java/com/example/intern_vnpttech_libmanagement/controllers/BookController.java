@@ -127,9 +127,9 @@ public class BookController {
     }
 
     @Operation(summary = "Add a book")
-    @PostMapping(path = "/add-old")
+    @PostMapping(path = "/add-book")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> add(@RequestBody Book book,
+    public ResponseEntity<?> addBook(@RequestBody Book book,
                                  @RequestParam(name = "publisher_id") long publisherId,
                                  @RequestParam(name = "book_type_id") long bookTypeId,
                                  @RequestParam(name = "amount") int amount) throws CloneNotSupportedException
@@ -152,10 +152,10 @@ public class BookController {
     /*
     * Provide some a book's infos and amount of records -> add the book's records to db
     * */
-    @Operation(summary = "Add a book with a number of book's records with")
+    @Operation(summary = "Add a book with a number of book's records")
     @PostMapping(path = "/add")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> addBook(@RequestBody NewBookDTO newBookDTO) throws CloneNotSupportedException
+    public ResponseEntity<?> add(@RequestBody NewBookDTO newBookDTO) throws CloneNotSupportedException
     {
         Optional<Publisher> publisherOptional = publisherService.findById(newBookDTO.getPublisherId());
         if(!publisherOptional.isPresent())
@@ -175,8 +175,10 @@ public class BookController {
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> importBook(@RequestParam(name = "excel_file")MultipartFile multipartFile)
     {
+        if(!excelFileService.validateExcelFile(multipartFile))
+            return ResponseEntity.status(200).body(new MessageResponse("File type error","fail"));
         excelFileService.importBookFromExcelFile(multipartFile);
-        return ResponseEntity.ok("");
+        return ResponseEntity.status(201).body(new MessageResponse("Import books successfully","success"));
     }
 
 
@@ -207,7 +209,7 @@ public class BookController {
     }
 
 
-    @Operation(summary = "Update a book by id")
+    @Operation(summary = "Update a book's record by id")
     @PutMapping(path = "/update-rec")
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> update(@RequestBody BookRecordDTO bookRecordDTO)
@@ -241,13 +243,12 @@ public class BookController {
     public ResponseEntity<?> deleteBook(@PathVariable(name = "book_id",required = false) Long bookId,
                                         @RequestParam(name = "book_code", required = false,defaultValue ="null") String bookCode)
     {
-        if(bookCode!=null)
+        if(bookCode!=null && !bookCode.equals("null"))
             return bookService.deleteByBookCode(bookCode)
                     ? ResponseEntity.status(200)
                     .body(new MessageResponse("Deleted the book with code: "+bookCode+" successfully","success"))
                     :ResponseEntity.status(200)
                     .body(new MessageResponse("Deleted the book with code: "+bookCode+" fail","fail"));
-
         else if(bookId!=null)
             return bookService.deleteById(bookId)
                     ? ResponseEntity.status(200)

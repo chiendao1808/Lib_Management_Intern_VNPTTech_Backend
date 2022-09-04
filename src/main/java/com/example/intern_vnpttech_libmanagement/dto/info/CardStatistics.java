@@ -18,16 +18,16 @@ public class CardStatistics {
 
      private int year;
 
-     private long totalNumberPublishedCard;
+     private long totalPublishedCards;
 
-     private Map<String,CardStatisticsDetails> detailNumbers;
+     private Map<String,CardStatisticsDetails> details;
 
      public CardStatistics()
      {
           this.month=0;
           this.year=1970;
-          this.totalNumberPublishedCard=0;
-          detailNumbers = new HashMap<>();
+          this.totalPublishedCards=0;
+          details = new HashMap<>();
      }
 
 }

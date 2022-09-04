@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -82,7 +81,7 @@ public class ExcelFileService {
                 }
                 // check filename's extentions
                 String ex= fileName.substring(fileName.trim().lastIndexOf("."));
-                if(ex.isBlank() ||!ex.contains("xls") || !ex.contains("xlsx")) // xls and xlsx are MS excel file type
+                if(ex.isBlank() ||!ex.contains("xls") || !ex.contains("xlsx")) // xls and xlsx are MS excel file types
                 {
                     log.error("File type error");
                     return false;
@@ -90,7 +89,7 @@ public class ExcelFileService {
                 // Check file's size
                 if(file.getSize()>10*1024*1024L) // max file size if 10MB
                 {
-                    log.error("File's sizw is exceed maximum allowed size");
+                    log.error("File's size exceeded maximum allowed size");
                     return false;
                 }
             } else {
@@ -106,7 +105,7 @@ public class ExcelFileService {
     }
 
     /*
-    * Get workbook with  particular type : xls -> HSSF , xlsx = XSSF
+    * Get workbook with  particular type : xls -> HSSF , xlsx -> XSSF
     * */
     public Workbook getWorkBook(MultipartFile multipartFile)
     {
@@ -196,19 +195,22 @@ public class ExcelFileService {
                 long amount = Math.round(Double.parseDouble(getCellValue(row.getCell(columnNames.get("Amount"))).toString()));
                 String bookImage = getCellValue(row.getCell(columnNames.get("Book Image"))).toString();
                 String bookCode = StringProcessUtils.bookCodeGenerator(bookType,bookName,authorName,(int)publishingYear);
-                // check booktype, publisher and set new books info
+
+                // check if the booktype is existed in db
                 if(!bookTypeRepo.getAllBookType().stream().filter(bookType1 -> bookType1.getBookTypeName().equals(bookType)).findFirst().isPresent())
                 {
                    BookType newBookType = bookTypeRepo
                            .save(BookType.builder()
-                                   .bookTypeName(bookType)
-                                   .createdAt(new Timestamp(System.currentTimeMillis()))
-                                    .deleted(false).build());
+                                            .bookTypeName(bookType)
+                                            .createdAt(new Timestamp(System.currentTimeMillis()))
+                                            .deleted(false).build());
                    newBook.setBookType(newBookType);
                 } else newBook.setBookType(bookTypeRepo
-                        .getAllBookType()
-                        .stream()
-                        .filter(bookType1 -> bookType1.getBookTypeName().equals(bookType)).findFirst().get());
+                                .getAllBookType()
+                                .stream()
+                                .filter(bookType1 -> bookType1.getBookTypeName().equals(bookType)).findFirst().get());
+
+                // check if  the publisher is existed in db
                 if(publisherRepo.existedPublisher(publisher)<=0){
                     Publisher newPublisher = Publisher.builder().publisherName(publisher).build();
                     Publisher addedPublisher = publisherRepo.save(newPublisher);
@@ -227,9 +229,10 @@ public class ExcelFileService {
                 newBook.setBookState("Good");
                 newBook.setAddedAt(new Timestamp(System.currentTimeMillis()));
                 newBook.setBookImage(bookImage);
+                newBook.setAvailable(true);
                 for(int i =1 ; i<= amount; i++)
                 {
-                    Book addedBook = (Book) newBook.clone();
+                    Book addedBook = (Book) newBook.clone(); // clone a record of a book
                     if(bookRepo.save(addedBook) == null)
                         continue;
                 }

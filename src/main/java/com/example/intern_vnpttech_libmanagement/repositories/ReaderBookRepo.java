@@ -25,7 +25,7 @@ public interface ReaderBookRepo extends JpaRepository<ReaderBook,Long> {
     List<ReaderBook> findByBook(long bookId);
 
     @Query(value = "select * from reader_book rb where rb.reader_id = :readerId and rb.book_id =:bookId" +
-            " and rd.deleted =false",nativeQuery = true)
+            " and rb.deleted =false",nativeQuery = true)
     Optional<ReaderBook> findByNotReturnBook(long bookId,long readerId);
 
     @Query(value = "select * from reader_book rb where rb.book_id = :bookId and rb.reader_id =:readerId" +
@@ -34,7 +34,7 @@ public interface ReaderBookRepo extends JpaRepository<ReaderBook,Long> {
 
     @Query(value = "select count(rb) from reader_book rb " +
             "inner join book b on b.book_id = rb.book_id " +
-            "where b.available =false and rb.deleted = false ",nativeQuery = true)
+            "where b.available =false and rb.returned_at is null and rb.deleted =false",nativeQuery = true)
     int countBorrowingBook(long readerId);
 
     @Modifying
