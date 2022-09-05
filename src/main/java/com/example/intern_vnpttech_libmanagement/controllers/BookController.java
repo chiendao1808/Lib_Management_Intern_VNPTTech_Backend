@@ -5,9 +5,12 @@ import com.example.intern_vnpttech_libmanagement.dto.entity_dto.BookRecordDTO;
 import com.example.intern_vnpttech_libmanagement.dto.info.NewBookDTO;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
 import com.example.intern_vnpttech_libmanagement.entities.Book;
+import com.example.intern_vnpttech_libmanagement.entities.BookType;
 import com.example.intern_vnpttech_libmanagement.entities.Publisher;
+import com.example.intern_vnpttech_libmanagement.repositories.BookTypeRepo;
 import com.example.intern_vnpttech_libmanagement.serviceimpls.file_process.ExcelFileService;
 import com.example.intern_vnpttech_libmanagement.services.BookService;
+import com.example.intern_vnpttech_libmanagement.services.BookTypeService;
 import com.example.intern_vnpttech_libmanagement.services.PublisherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,6 +39,9 @@ public class BookController {
 
     @Autowired
     private ExcelFileService excelFileService;
+
+    @Autowired
+    private BookTypeRepo bookTypeRepo;
 
     // Gộp tất cả api get thành 1 API getAll : truyền tất cả các params cần thiết
 
@@ -160,10 +166,14 @@ public class BookController {
         Optional<Publisher> publisherOptional = publisherService.findById(newBookDTO.getPublisherId());
         if(!publisherOptional.isPresent())
             return ResponseEntity.status(200).body(new MessageResponse("Publisher not found","fail"));
+        Optional<BookType> bookTypeOp = bookTypeRepo.getAllBookType().stream().filter(bookType1 -> bookType1.getBookTypeId()== newBookDTO.getBookTypeId()).findFirst();
+        if(!bookTypeOp.isPresent())
+            return ResponseEntity.status(200).body(new MessageResponse("Book Type not found","fail"));
         for(int i = 0; i< newBookDTO.getAmount(); i++)
         {
             Book newBook = (Book) newBookDTO.getBook().clone();
             newBook.setPublisher(publisherOptional.get());
+            newBook.setBookType(bookTypeOp.get());
             if(!bookService.add(newBook).isPresent())
                 return ResponseEntity.status(200).body(new MessageResponse("Add book fail","fail"));
         }

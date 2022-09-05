@@ -1,6 +1,7 @@
 package com.example.intern_vnpttech_libmanagement.controllers;
 
 import com.example.intern_vnpttech_libmanagement.dto.request.LoginRequest;
+import com.example.intern_vnpttech_libmanagement.dto.request.SignUpRequest;
 import com.example.intern_vnpttech_libmanagement.dto.response.LoginResponse;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
 import com.example.intern_vnpttech_libmanagement.entities.Staff;
@@ -48,9 +49,11 @@ public class AuthController {
 
     @Operation(summary = "Sign up a library staff")
     @PostMapping(path = "/signup")
-    public ResponseEntity<?> signUp(@RequestBody Staff staff)
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest)
     {
-        return staffService.add(staff).isPresent()
+        Staff newStaff = signUpRequest.getStaffInfo();
+        newStaff.setStaffPassword(signUpRequest.getStaffPassword());
+        return staffService.add(newStaff).isPresent()
                 ?ResponseEntity.status(200).body(new MessageResponse("Add staff successfully","success"))
                 :ResponseEntity.status(200).body(new MessageResponse("Add staff fail","fail"));
     }
