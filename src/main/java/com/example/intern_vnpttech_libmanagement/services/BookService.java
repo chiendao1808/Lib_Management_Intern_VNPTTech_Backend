@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public interface BookService {
 
-    Page<Book> findByCriteria(long bookId, String bookName, String bookAuthor, String bookCode, long publisherId, boolean all,Pageable pageable);
+    Page<Book> findByCriteria(long bookId, String bookName, String bookAuthor, String bookCode, long publisherId,Pageable pageable);
 
     Page<Book> findAll(Pageable pageable);
 

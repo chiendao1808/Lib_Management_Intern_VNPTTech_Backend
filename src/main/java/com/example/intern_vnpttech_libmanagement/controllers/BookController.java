@@ -41,7 +41,7 @@ public class BookController {
     private ExcelFileService excelFileService;
 
     @Autowired
-    private BookTypeRepo bookTypeRepo;
+    private BookTypeRepo bookTypeRepo; // thay tạm cho service
 
     // Gộp tất cả api get thành 1 API getAll : truyền tất cả các params cần thiết
 
@@ -49,111 +49,21 @@ public class BookController {
     * Filter API for book
     */
     @Operation(summary = "Get books with a criteria")
-    @GetMapping(path = "/get")
+    @GetMapping()
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> get(@RequestParam(name = "book_id",required = false,defaultValue = "0")Long bookId,
-                                 @RequestParam(name = "book_name",required = false,defaultValue = "null") String bookName,
-                                 @RequestParam(name = "book_author",required = false,defaultValue = "null") String bookAuthor,
-                                 @RequestParam(name = "book_code",required = false,defaultValue = "null")String bookCode,
-                                 @RequestParam(name = "publisher_id",required = false,defaultValue = "0") Long publisherId,
-                                 @RequestParam(name = "all",required = false,defaultValue = "false") Boolean all,
+    public ResponseEntity<?> get(@RequestParam(name = "book_id",required = false,defaultValue = "-1")Long bookId,
+                                 @RequestParam(name = "book_name",required = false,defaultValue = "ALL") String bookName,
+                                 @RequestParam(name = "book_author",required = false,defaultValue = "ALL") String bookAuthor,
+                                 @RequestParam(name = "book_code",required = false,defaultValue = "NONE")String bookCode,
+                                 @RequestParam(name = "publisher_id",required = false,defaultValue = "-1") Long publisherId,
                                  @RequestParam(name = "page",defaultValue = "1") Integer page,
+                                 @RequestParam(name = "size", defaultValue = "1") Integer size,
                                  Pageable pageable,
                                  HttpServletRequest request)
     {
-        pageable =PageRequest.of(page-1,2);
-        if(all.booleanValue()==true)
-            return ResponseEntity.ok(bookService.findAll(pageable));
-        return ResponseEntity.ok(bookService.findByCriteria(bookId,bookName,bookAuthor,bookCode,publisherId,all,pageable));
+        pageable =PageRequest.of(page-1,size);
+        return ResponseEntity.ok(bookService.findByCriteria(bookId,bookName,bookAuthor,bookCode,publisherId,pageable));
     }
-
-    @Operation(summary = "Find all book's records from database")
-    @SecurityRequirement(name = "methodAuth")
-    @GetMapping(path = "/find-all-rec")
-    @Parameters({@Parameter(name = "page",description = "page number for paging")})
-    public ResponseEntity<?> findAllBookRecord(Pageable pageable, @RequestParam(name = "page") int page)
-    {
-        pageable = PageRequest.of(page-1,1);
-        return ResponseEntity.status(200).body(bookService.findAll(pageable));
-    }
-
-    @Operation(summary = "Find all books in database")
-    @GetMapping(path = "/find-all-books")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> findAllBooks(){
-        return ResponseEntity.status(200).body(bookService.findAllBooks());
-    }
-
-    @Operation(summary = "Find books by book's name")
-    @GetMapping(path = "/find-by-book-name")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> findByBookName(@RequestBody BodyRequest bodyRequest,
-                                            Pageable pageable,
-                                            @RequestParam(name = "page")int page)
-    {
-        pageable =PageRequest.of(page-1,1);
-        String bookName = null;
-        if(bodyRequest.getBody() instanceof String);
-            bookName = (String) bodyRequest.getBody();
-        return ResponseEntity.status(200).body(bookService.findByBookName(bookName,pageable));
-    }
-
-    @Operation(summary = "Find a book by id")
-    @GetMapping(path = "/find-by-id")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> findByBookId(@RequestParam(name = "book_id") long bookId)
-    {
-        return bookService.findByBookId(bookId).isPresent()
-                ?ResponseEntity.ok(bookService.findByBookId(bookId))
-                :ResponseEntity.status(200).body(new MessageResponse("Book not found","fail"));
-    }
-
-    @Operation(summary = "Check a book if it available for borrowing ")
-    @GetMapping(path = "/available/{book_id}")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> checkBookAvailable(@PathVariable(name = "book_id") long bookId)
-    {
-        return bookService.findByBookId(bookId).isPresent() && bookService.findByBookId(bookId).get().isAvailable()==true
-                ?ResponseEntity.status(200).body(new MessageResponse("Available","success"))
-                :ResponseEntity.status(200).body(new MessageResponse("Not available","success"));
-    }
-
-    @Operation(summary = "Find all books of a author")
-    @GetMapping(path = "/find-by-author")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> findByBookAuthor(@RequestBody BodyRequest bodyRequest,
-                                              Pageable pageable,
-                                              @RequestParam(name = "page") int page)
-    {
-        pageable = PageRequest.of(page-1,2);
-        String authorName = null;
-        if(bodyRequest.getBody() instanceof String)
-            authorName = (String)bodyRequest.getBody();
-        return ResponseEntity.ok(bookService.findByAuthor(authorName,pageable));
-    }
-
-    @Operation(summary = "Add a book")
-    @PostMapping(path = "/add-book")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> addBook(@RequestBody Book book,
-                                 @RequestParam(name = "publisher_id") long publisherId,
-                                 @RequestParam(name = "book_type_id") long bookTypeId,
-                                 @RequestParam(name = "amount") int amount) throws CloneNotSupportedException
-            // đưa tất cả đưa vào DTO , NewBookDTO = Book + params
-    {
-        Optional<Publisher> publisherOptional = publisherService.findById(publisherId);
-        if(!publisherOptional.isPresent())
-            return ResponseEntity.status(200).body(new MessageResponse("Publisher not found","fail"));
-        for(int i=0; i<amount;i++)
-        {
-            Book newBook = (Book)book.clone();
-            newBook.setPublisher(publisherOptional.get());
-            if(!bookService.add(newBook).isPresent())
-                return ResponseEntity.status(200).body(new MessageResponse("Add book fail","fail"));
-        }
-        return ResponseEntity.status(201).body(new MessageResponse("Add book sucessfully","success"));
-    }
-
 
     /*
     * Provide some a book's infos and amount of records -> add the book's records to db
@@ -196,7 +106,7 @@ public class BookController {
     * New Update API for book
     * */
     @Operation(summary = "Update all records of a book or a book's record")
-    @PutMapping(path = "/update")
+    @PutMapping()
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> updateByBookCode(@RequestBody BookRecordDTO bookRecordDTO)
     {
@@ -232,23 +142,13 @@ public class BookController {
     }
 
 
-    @Operation(summary = "Delete a book")
-    @DeleteMapping(path = "/delete-by-bookcode")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> deleteByBookCode(@RequestParam(name = "book_code") String bookCode)
-    {
-        return bookService.deleteByBookCode(bookCode)
-                ?ResponseEntity.status(200).body(new MessageResponse("Delete book successfully ","success"))
-                : ResponseEntity.status(200).body(new MessageResponse("Delete book fail","fail"));
-    }
-
 
     /*
     * Provide book's record id or a book's code -> delete a record or all records of a book
     * New Delete API for book
      */
     @Operation(summary = "Delete a book's record or all records of a book")
-    @DeleteMapping(path = "/delete/{book_id}")
+    @DeleteMapping(path = "/{book_id}")
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> deleteBook(@PathVariable(name = "book_id",required = false) Long bookId,
                                         @RequestParam(name = "book_code", required = false,defaultValue ="null") String bookCode)

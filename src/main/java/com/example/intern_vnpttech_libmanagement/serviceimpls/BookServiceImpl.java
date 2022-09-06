@@ -28,7 +28,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public Page<Book> findByCriteria(long bookId, String bookName, String bookAuthor, String bookCode, long publisherId, boolean all,Pageable pageable) {
+    public Page<Book> findByCriteria(long bookId, String bookName, String bookAuthor, String bookCode, long publisherId,Pageable pageable) {
         try{
            // System.out.println(bookRepo.findByCriteria(bookId, bookName, bookAuthor, bookCode, publisherId,pageable).getContent().size());
             return bookRepo.findByCriteria(bookId, bookName, bookAuthor, bookCode, publisherId,pageable);

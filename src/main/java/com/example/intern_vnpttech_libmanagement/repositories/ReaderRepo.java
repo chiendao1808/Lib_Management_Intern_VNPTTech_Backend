@@ -16,13 +16,13 @@ import java.util.Optional;
 @Repository
 public interface ReaderRepo extends JpaRepository<Reader,Long> {
 
+
     @Query(value = "select * from reader rd where \n" +
-            "( " +
-            " rd.reader_id = :readerId \n " +
-            "or lower (rd.reader_name) like lower (concat('%',:readerName,'%')) \n" +
-            "or rd.reader_phone = :readerPhone \n" +
-            "or rd.reader_email = :readerEmail \n" +
-            ")" +" and rd.deleted = false order by rd.reader_id asc",nativeQuery = true)
+            " ( -1 = :readerId or  rd.reader_id = :readerId) \n " +
+            "and ( :readerName ='ALL' or lower (rd.reader_name) like lower (concat('%',:readerName,'%'))) \n" +
+            "and ( :readerPhone ='ALL' or rd.reader_phone = :readerPhone ) \n" +
+            "and ( :readerEmail ='ALL' or rd.reader_email = :readerEmail ) \n" +
+            "" +" and rd.deleted = false order by rd.reader_id asc",nativeQuery = true)
     Page<Reader> findByCriteria(Long readerId, String readerName, String readerPhone, String readerEmail,Pageable pageable);
 
     @Query(value = "select * from reader rd where rd.deleted =false ",nativeQuery = true)

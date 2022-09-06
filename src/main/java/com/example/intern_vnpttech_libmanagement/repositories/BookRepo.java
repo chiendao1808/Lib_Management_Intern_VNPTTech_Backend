@@ -17,15 +17,16 @@ import java.util.Optional;
 @Repository
 public interface BookRepo extends JpaRepository<Book,Long> {
 
+
     @Query(value = "select * from book b where " +
-            " ( \n" +
-            "( b.book_id =:bookId) \n" +
-            "or (lower(b.book_name) like lower(concat('%',:bookName,'%'))"  +") \n"+
-            "or (lower(b.book_author) like lower(concat('%',:bookAuthor,'%'))) \n"+
-            "or (b.book_code = :bookCode) \n"+
-            "or (b.publisher_id = :publisherId) \n" +
-            " ) \n "+
-            SQLBookConstants.DELETED_CHECK +
+            "\n" +
+            "   (-1 = :bookId or b.book_id =:bookId) \n" +
+            "and ( :bookName ='ALL' or lower(b.book_name) like lower(concat('%',:bookName,'%'))) \n"+
+            "and ( :bookAuthor = 'ALL' or lower(b.book_author) like lower(concat('%',:bookAuthor,'%'))) \n"+
+            "and ( :bookCode ='NONE' or  b.book_code = :bookCode) \n"+
+            "and (-1 = :publisherId or b.publisher_id = :publisherId) \n" +
+            "\n and  "+
+            SQLBookConstants.DELETED_CHECK + "\n" +
             " order by b.book_id asc",nativeQuery = true)
     Page<Book> findByCriteria(Long bookId, String bookName, String bookAuthor, String bookCode, Long publisherId,Pageable pageable);
 
