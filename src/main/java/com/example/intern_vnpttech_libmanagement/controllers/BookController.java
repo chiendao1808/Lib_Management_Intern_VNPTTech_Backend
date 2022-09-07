@@ -66,7 +66,7 @@ public class BookController {
     * Provide some a book's infos and amount of records -> add the book's records to db
     * */
     @Operation(summary = "Add a book with a number of book's records")
-    @PostMapping(path = "/add")
+    @PostMapping()
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> add(@RequestBody NewBookDTO newBookDTO) throws CloneNotSupportedException
     {
@@ -105,7 +105,7 @@ public class BookController {
     @Operation(summary = "Update all records of a book or a book's record")
     @PutMapping()
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> updateByBookCode(@RequestBody BookRecordDTO bookRecordDTO)
+    public ResponseEntity<?> update(@RequestBody BookRecordDTO bookRecordDTO)
     {
         if(bookRecordDTO.getBookCode()!=null) {
             if (bookService.findByBookCode(bookRecordDTO.getBookCode()).isEmpty())
@@ -124,20 +124,6 @@ public class BookController {
         }
         return ResponseEntity.status(200).body(new MessageResponse("Both BookId and BookCode are null","fail"));
     }
-
-
-    @Operation(summary = "Update a book's record by id")
-    @PutMapping(path = "/update-rec")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> update(@RequestBody BookRecordDTO bookRecordDTO)
-    {
-        if(!bookService.findByBookId(bookRecordDTO.getBookId()).isPresent())
-            return ResponseEntity.status(200).body(new MessageResponse("Book not found","fail"));
-        return bookService.update(bookRecordDTO).isPresent()
-                ?ResponseEntity.status(201).body(new MessageResponse("Update book successfully","success"))
-                :ResponseEntity.status(200).body(new MessageResponse("Update book fail","fail"));
-    }
-
 
 
     /*

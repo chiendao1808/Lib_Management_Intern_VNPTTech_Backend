@@ -2,9 +2,7 @@ package com.example.intern_vnpttech_libmanagement.controllers;
 
 import com.example.intern_vnpttech_libmanagement.dto.entity_dto.StaffDTO;
 import com.example.intern_vnpttech_libmanagement.dto.request.ChangePasswordRequest;
-import com.example.intern_vnpttech_libmanagement.dto.request.StaffRequest;
 import com.example.intern_vnpttech_libmanagement.dto.response.MessageResponse;
-import com.example.intern_vnpttech_libmanagement.entities.Staff;
 import com.example.intern_vnpttech_libmanagement.security.SecurityService;
 import com.example.intern_vnpttech_libmanagement.services.StaffService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "libmng/api/staff")

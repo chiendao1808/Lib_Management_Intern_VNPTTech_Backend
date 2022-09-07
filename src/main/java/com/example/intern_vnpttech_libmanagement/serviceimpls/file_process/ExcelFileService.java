@@ -1,6 +1,5 @@
 package com.example.intern_vnpttech_libmanagement.serviceimpls.file_process;
 
-import com.example.intern_vnpttech_libmanagement.dto.info.CellInfos;
 import com.example.intern_vnpttech_libmanagement.entities.Book;
 import com.example.intern_vnpttech_libmanagement.entities.BookType;
 import com.example.intern_vnpttech_libmanagement.entities.Publisher;
@@ -161,30 +160,26 @@ public class ExcelFileService {
     {
         try{
             log.trace("Call importBookFromExcelFile method");
-            if(!validateExcelFile(excelFile))
-                throw new RuntimeException("Input file is not accepted !");
             Workbook workbook = getWorkBook(excelFile);
             Sheet firstSheet = workbook.getSheetAt(0);
-            Map<String,Integer> columnNames = new HashMap<>();
-            //Set<CellInfos> cellInfos = new HashSet<>();
+            Map<String,Integer> columnNames = new LinkedHashMap<>();
             Iterator<Row> iter = firstSheet.iterator();
             //
             while (iter.hasNext())
             {
                 Row row = iter.next();
-                // check if row is empty
-                if(row.getCell(columnNames.get("Num")).toString().equals("") || row.getCell(columnNames.get("Num")) ==null)
-                    break;
                 // Get first row -> column's name and column index to map
                 if(row.getRowNum()==0) {
                     for (Cell cell : row) {
                         if (getCellValue(cell) instanceof String) {
                             columnNames.put(getCellValue(cell).toString(), cell.getColumnIndex());
-                            //  cellInfos.add(new CellInfos(row.getRowNum(),cell.getColumnIndex(),getCellValue(cell).toString()));
                         }
                     }
                     continue;
                 }
+                //check if row is empty ->
+                if(row.getCell(columnNames.get("Num")).toString().equals("") || row.getCell(columnNames.get("Num")) ==null)
+                    break;
                 // get book's infos from a row ;
                 Book newBook = new Book();
                 String bookName = getCellValue(row.getCell(columnNames.get("Book Name"))).toString();
@@ -197,7 +192,8 @@ public class ExcelFileService {
                 String bookCode = StringProcessUtils.bookCodeGenerator(bookType,bookName,authorName,(int)publishingYear);
 
                 // check if the booktype is existed in db
-                if(!bookTypeRepo.getAllBookType().stream().filter(bookType1 -> bookType1.getBookTypeName().equals(bookType)).findFirst().isPresent())
+                Optional<BookType> bookTypeOptional =bookTypeRepo.getAllBookType().stream().filter(bookType1 -> bookType1.getBookTypeName().equals(bookType)).findFirst();
+                if(!bookTypeOptional.isPresent())
                 {
                    BookType newBookType = bookTypeRepo
                            .save(BookType.builder()
@@ -205,10 +201,7 @@ public class ExcelFileService {
                                             .createdAt(new Timestamp(System.currentTimeMillis()))
                                             .deleted(false).build());
                    newBook.setBookType(newBookType);
-                } else newBook.setBookType(bookTypeRepo
-                                .getAllBookType()
-                                .stream()
-                                .filter(bookType1 -> bookType1.getBookTypeName().equals(bookType)).findFirst().get());
+                } else newBook.setBookType(bookTypeOptional.get());
 
                 // check if  the publisher is existed in db
                 if(publisherRepo.existedPublisher(publisher)<=0){
@@ -230,12 +223,14 @@ public class ExcelFileService {
                 newBook.setAddedAt(new Timestamp(System.currentTimeMillis()));
                 newBook.setBookImage(bookImage);
                 newBook.setAvailable(true);
+                List<Book> listBooks = new ArrayList<>();
                 for(int i =1 ; i<= amount; i++)
                 {
                     Book addedBook = (Book) newBook.clone(); // clone a record of a book
-                    if(bookRepo.save(addedBook) == null)
-                        continue;
+                    listBooks.add(addedBook);
                 }
+                if(bookRepo.saveAll(listBooks).isEmpty())
+                    throw new RuntimeException("Add list books to db error");
             }
         } catch (Exception ex)
         {
