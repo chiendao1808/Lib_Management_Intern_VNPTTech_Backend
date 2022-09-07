@@ -6,6 +6,8 @@ import com.example.intern_vnpttech_libmanagement.repositories.PublisherRepo;
 import com.example.intern_vnpttech_libmanagement.services.PublisherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +19,17 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Autowired
     private PublisherRepo publisherRepo;
+
+    @Override
+    public Page<Publisher> findByCriteria(Long publisherId, String publisherName, String publisherPhone, String publisherEmail, String publisherFax, Pageable pageable) {
+        try{
+            return publisherRepo.findByCriteria(publisherId, publisherName, publisherPhone, publisherEmail, publisherFax, pageable);
+        } catch (Exception ex)
+        {
+            log.error("Find publiser by creterias error", ex);
+            return Page.empty();
+        }
+    }
 
     @Override
     public Optional<Publisher> findById(long publisherId) {

@@ -10,6 +10,6 @@ public class SecurityConstants {
 
     public static final String TOKEN_TYPE = "Bearer";
 
-    public static final long EXPERITION_TIME = 4*60*60*1000; //4h -> dễ cho test
+    public static final long EXPERITION_TIME = 4*60*60*1000L; //4h -> dễ cho test
 
 }

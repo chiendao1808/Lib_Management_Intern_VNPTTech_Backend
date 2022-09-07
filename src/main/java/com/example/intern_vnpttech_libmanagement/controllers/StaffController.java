@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -33,32 +35,28 @@ public class StaffController {
     @Autowired
     private SecurityService securityService;
 
-    @Operation(summary = "Find a staff by id")
-    @GetMapping(path = "/find-by-id")
+    @Operation(summary = "Filter staffs")
+    @GetMapping
     @SecurityRequirement(name = "methodAuth")
-    @RolesAllowed("ROLE_MANAGER")
-    public ResponseEntity<?> findById(@RequestParam(name = "staff_id") long staffId)
+    @RolesAllowed({"ROLE_MANAGER"})
+    public ResponseEntity<?> get(@RequestParam(name = "staff_id",required = false,defaultValue = "-1")Long staffId,
+                                 @RequestParam(name = "staff_username",required = false,defaultValue = "ALL") String staffUsername,
+                                 @RequestParam(name = "staff_email",required = false,defaultValue = "ALL")String staffEmail,
+                                 @RequestParam(name = "staff_name",required = false,defaultValue = "ALL") String staffName,
+                                 @RequestParam(name = "staff_phone",required = false,defaultValue = "ALL")String staffPhone,
+                                 @RequestParam(name = "page",required = false,defaultValue = "1") int page,
+                                 @RequestParam(name = "size",required = false,defaultValue = "1") int size,
+                                 Pageable pageable,
+                                 HttpServletRequest request)
     {
-        return staffService.findById(staffId).isPresent()
-                ?ResponseEntity.status(200).body(staffService.findById(staffId))
-                :ResponseEntity.status(200).body(new MessageResponse("Staff not found","fail"));
-    }
-
-    @Operation(summary = "Find a staff by username or email")
-    @GetMapping(path = "/find-by-username-or-email")
-    @SecurityRequirement(name = "methodAuth")
-    @RolesAllowed("ROLE_MANAGER")
-    public ResponseEntity<?> findByUsernameOrEmail(@RequestBody StaffRequest staffRequest)
-    {
-        Optional<Staff> staffOptional = staffService.findByUsernameOrEmailOrPhone(staffRequest.getStaffUsername(),staffRequest.getStaffEmail());
-        return staffOptional.isPresent()?ResponseEntity.ok(staffOptional)
-                :ResponseEntity.status(200).body(new MessageResponse("Staff not found","fail"));
+        pageable = PageRequest.of(page-1, size);
+        return ResponseEntity.ok(staffService.findByCreterias(staffId,staffUsername,staffEmail,staffName,staffPhone,pageable));
     }
 
     // đăng ký mới chuyển qua Auth controller
 
     @Operation(summary = "Update staff's infos (self-update)")
-    @PutMapping(path = "/update")
+    @PutMapping
     @SecurityRequirement(name = "methodAuth")
     public ResponseEntity<?> update(@RequestBody StaffDTO staffDTO,
                                     HttpServletRequest request)
@@ -90,10 +88,10 @@ public class StaffController {
     }
 
     @Operation(summary = "Delete a staff")
-    @DeleteMapping(path = "/delete")
+    @DeleteMapping(path = "/{staff_id}")
     @SecurityRequirement(name = "methodAuth")
     @RolesAllowed("ROLE_MANAGER")
-    public ResponseEntity<?> delete(@RequestParam(name = "staff_id")long staffId)
+    public ResponseEntity<?> delete(@PathVariable(name = "staff_id")long staffId)
     {
         return staffService.delete(staffId)
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete staff successfully","success"))

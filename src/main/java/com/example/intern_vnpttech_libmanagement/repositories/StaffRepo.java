@@ -1,6 +1,8 @@
 package com.example.intern_vnpttech_libmanagement.repositories;
 
 import com.example.intern_vnpttech_libmanagement.entities.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,21 @@ import java.util.Optional;
 
 @Repository
 public interface StaffRepo extends JpaRepository<Staff,Long> {
+
+
+    @Query(value = "select * from staff st where \n" +
+            "(:staffId =-1 or st.staff_id = :staffId) \n " +
+            "and (:staffUsername ='ALL' or st.staff_username = :staffUsername) \n " +
+            "and (:staffEmail ='ALL' or st.staff_email = :staffEmail) \n " +
+            "and (:staffPhone ='ALL' or st.staff_phone = :staffPhone) \n " +
+            "and (:staffName ='ALL' or lower (st.staff_name) like concat('%',:staffName,'%')) \n " +
+            "and st.deleted =false order by st.staff_id asc",nativeQuery = true)
+    Page<Staff> findByCreterias(Long staffId,
+                                String staffUsername,
+                                String staffEmail,
+                                String staffName,
+                                String staffPhone,
+                                Pageable pageable);
 
     @Query(value = "from Staff staff where staff.deleted =false ")
     List<Staff> findAll();

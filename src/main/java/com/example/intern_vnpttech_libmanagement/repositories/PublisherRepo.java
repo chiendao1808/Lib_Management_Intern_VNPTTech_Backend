@@ -1,6 +1,8 @@
 package com.example.intern_vnpttech_libmanagement.repositories;
 
 import com.example.intern_vnpttech_libmanagement.entities.Publisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,20 @@ import java.util.Optional;
 
 @Repository
 public interface PublisherRepo extends JpaRepository<Publisher,Long> {
+
+    @Query(value = "select * from publisher pub where  \n" +
+            " (:publisherId =-1 or :publisherId = pub.publisher_id) \n" +
+            "and (:publisherName ='ALL' or lower (pub.publisher_name) like lower (concat('%',:publisherName,'%'))) \n" +
+            "and (:publisherPhone = ='ALL' or pub.publisher_phone = : publisherPhone) \n " +
+            "and (:publisherEmail ='ALL' or pub.publisher_email = :publisherEmail) \n" +
+            "and (:publisherFax ='ALL' or pub.publisher_fax = :publisherFax) \n " +
+            "and pub.deleted = false order  by pub.publisher_id asc", nativeQuery = true)
+    Page<Publisher> findByCriteria(Long publisherId,
+                                   String publisherName,
+                                   String publisherPhone,
+                                   String publisherEmail,
+                                   String publisherFax,
+                                   Pageable pageable);
 
     @Query(value = "select * from publisher pub where pub.publisher_id = :publisherId and pub.deleted = false ",nativeQuery = true)
     Optional<Publisher> findByPublisherId(long publisherId);

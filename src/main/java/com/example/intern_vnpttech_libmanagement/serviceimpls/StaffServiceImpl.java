@@ -6,6 +6,8 @@ import com.example.intern_vnpttech_libmanagement.repositories.StaffRepo;
 import com.example.intern_vnpttech_libmanagement.services.StaffService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,18 @@ public class StaffServiceImpl implements StaffService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    @Override
+    public Page<Staff> findByCreterias(Long staffId, String staffUsername, String staffEmail, String staffName, String staffPhone, Pageable pageable) {
+        try{
+            return staffRepo.findByCreterias(staffId, staffUsername, staffEmail, staffName, staffPhone, pageable);
+        } catch (Exception ex)
+        {
+            log.error("Find Staff By Creterias error",ex);
+            return Page.empty();
+        }
+    }
 
     @Override
     public List<Staff> findAll() {

@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,32 +23,27 @@ public class PublisherController {
     @Autowired
     private PublisherService publisherService;
 
-    @Operation(summary = "Find a publisher by id")
-    @GetMapping(path = "/find-by-id")
-    @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> findById(@RequestParam(name = "publisher_id")long publisherId,
-                                      HttpServletRequest request)
-    {
-        return publisherService.findById(publisherId).isPresent()
-                ?ResponseEntity.ok(publisherService.findById(publisherId))
-                :ResponseEntity.status(200).body(new MessageResponse("Publisher not found","fail"));
-    }
 
-    @Operation(summary = "Find a publisher by phone or email")
-    @GetMapping(path = "/find-by-phone-or-email")
-    @SecurityRequirement(name ="methodAuth")
-    public ResponseEntity<?> findByPhoneOrEmail(@RequestParam(name = "phone") String phone,
-                                                @RequestParam(name = "email") String email,
-                                                HttpServletRequest request)
+    @Operation(summary = "Filter publishers")
+    @GetMapping
+    @SecurityRequirement(name = "methodAuth")
+    public ResponseEntity<?> get(@RequestParam(name = "publisher_id", required = false,defaultValue = "-1") Long publisherId,
+                                 @RequestParam(name = "publisher_name",required = false,defaultValue = "ALL") String publisherName,
+                                 @RequestParam(name = "publisher_phone",required = false,defaultValue = "ALL") String publisherPhone,
+                                 @RequestParam(name = "publisher_email",required = false,defaultValue = "ALL") String publisherEmail,
+                                 @RequestParam(name = "publisher_fax",required = false,defaultValue = "ALL") String publisherFax,
+                                 @RequestParam(name = "page",required = false,defaultValue = "1") int page,
+                                 @RequestParam(name = "size",required = false,defaultValue = "1") int size,
+                                 Pageable pageable,
+                                 HttpServletRequest request)
     {
-        return !publisherService.findByPhoneOrEmail(phone,email).isPresent()
-                ?ResponseEntity.ok(publisherService.findByPhoneOrEmail(phone,email))
-                :ResponseEntity.status(200).body(new MessageResponse("Publisher not found (by email or phone)","fail"));
+        pageable = PageRequest.of(page-1,size);
+        return ResponseEntity.ok(publisherService.findByCriteria(publisherId,publisherName, publisherPhone,publisherEmail,publisherFax,pageable));
     }
 
 
     @Operation(summary = "Add a new publisher")
-    @PostMapping(path = "/add")
+    @PostMapping()
     @SecurityRequirement(name ="methodAuth")
     public ResponseEntity<?> add(@RequestBody Publisher publisher)
     {
@@ -56,13 +53,11 @@ public class PublisherController {
     }
 
     @Operation(summary = "Update a publisher's infos")
-    @PutMapping(path = "/update")
+    @PutMapping()
     public ResponseEntity<?> update(@RequestBody PublisherDTO publisherDTO,
-                                    @RequestParam(name = "publisher_id") long publisherId,
                                     HttpServletRequest request)
     {
-        return publisherService.findById(publisherId).map(publisher -> {
-            publisherDTO.setPublisherId(publisherId);
+        return publisherService.findById(publisherDTO.getPublisherId()).map(publisher -> {
             return publisherService.update(publisherDTO).isPresent()
                     ?ResponseEntity.status(200).body(new MessageResponse("Update publisher successfully","success"))
                     :ResponseEntity.status(200).body(new MessageResponse("Update publisher fail","fail"));
@@ -71,9 +66,9 @@ public class PublisherController {
     }
 
     @Operation(summary = "Delete a publisher")
-    @PutMapping(path = "/delete")
+    @DeleteMapping (path = "/{publisher_id}")
     @SecurityRequirement(name = "methodAuth")
-    public ResponseEntity<?> delete(@RequestParam(name = "publisher_id")long publisherId)
+    public ResponseEntity<?> delete(@PathVariable(name = "publisher_id")long publisherId)
     {
         return publisherService.delete(publisherId)
                 ?ResponseEntity.status(200).body(new MessageResponse("Delete the publisher successfully","success"))
